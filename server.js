@@ -23,11 +23,11 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 
 // Import the routes
-const userApiRoutes = require("./routes/users-api");
-const budgetApiRoutes = require("./routes/budget-api");
-const contactsApiRoutes = require("./routes/contacts-api");
-const transfersApiRoutes = require("./routes/transfers-api");
-const transactionsApiRoutes = require("./routes/transactions-api");
+const userApiRoutes = require("./routes/users");
+const budgetApiRoutes = require("./routes/budget");
+const contactsApiRoutes = require("./routes/contacts");
+const transfersApiRoutes = require("./routes/transfers");
+const transactionsApiRoutes = require("./routes/transactions");
 
 // Mount all resource routes
 app.use("/api/users", userApiRoutes);
