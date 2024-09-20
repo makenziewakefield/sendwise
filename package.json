@@ -5,12 +5,14 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "local": "./node_modules/.bin/nodemon -L --ignore public/",
     "db:reset": "node bin/resetdb.js",
     "build": "webpack --mode production",
-    "dev": "webpack serve --mode development --open"
-  },
+    "dev": "webpack serve --mode development --open",
+    "serve": "nodemon server.js",
+    "browser-sync": "browser-sync start --proxy 'localhost:8080' --files 'public/**/*' --port 3000"
+   },
   "author": "Lighthouse Labs",
   "license": "ISC",
   "dependencies": {
@@ -29,6 +31,8 @@
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "babel-loader": "^9.2.1",
+    "browser-sync": "^3.0.2",
+    "concurrently": "^9.0.1",
     "html-webpack-plugin": "^5.6.0",
     "nodemon": "^2.0.10",
     "webpack": "^5.94.0",
