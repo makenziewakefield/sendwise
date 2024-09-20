@@ -1,15 +1,19 @@
-/*
- * All routes for Users are defined here
- * Since this file is loaded in server.js into /users,
- *   these routes are mounted onto /users
- * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
- */
+const express = require("express");
+const router = express.Router();
 
-const express = require('express');
-const router  = express.Router();
+// Get all users
+router.get("/", (req, res) => {});
 
-router.get('/', (req, res) => {
-  res.render('users');
-}); 
+// Get a specific user by ID
+router.get("/:id", (req, res) => {});
+
+// Add a new user
+router.post("/", (req, res) => {});
+
+// Update a user by ID
+router.put("/:id", (req, res) => {});
+
+// Delete a user by ID
+router.delete("/:id", (req, res) => {});
 
 module.exports = router;
