@@ -1,47 +1,24 @@
 {
-  "name": "node-skeleton",
+  "name": "sendwise",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "LHL Node Skeleton =========",
+  "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
-    "local": "./node_modules/.bin/nodemon -L --ignore public/",
-    "db:reset": "node bin/resetdb.js",
-    "build": "webpack --mode production",
-    "dev": "webpack serve --mode development --open",
-    "serve": "nodemon server.js",
-    "browser-sync": "browser-sync start --proxy 'localhost:8080' --files 'public/**/*' --port 3000"
+    "start": "concurrently \"npm start --prefix frontend\" \"npm start --prefix backend\""
   },
-  "author": "Lighthouse Labs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/makenziewakefield/sendwise.git"
+  },
+  "keywords": [],
+  "author": "",
   "license": "ISC",
-  "dependencies": {
-    "chalk": "^2.4.2",
-    "cors": "^2.8.5",
-    "dotenv": "^2.0.0",
-    "ejs": "^3.1.10",
-    "express": "^4.21.0",
-    "express-rate-limit": "^7.4.0",
-    "express-validator": "^7.2.0",
-    "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "pg": "^8.5.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "sass": "^1.35.1"
+  "bugs": {
+    "url": "https://github.com/makenziewakefield/sendwise/issues"
   },
+  "homepage": "https://github.com/makenziewakefield/sendwise#readme",
   "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.4",
-    "@babel/preset-react": "^7.24.7",
-    "babel-loader": "^9.2.1",
-    "browser-sync": "^3.0.2",
-    "concurrently": "^9.0.1",
-    "html-webpack-plugin": "^5.6.0",
-    "nodemon": "^2.0.10",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.1.0"
+    "concurrently": "^9.0.1"
   }
 }
