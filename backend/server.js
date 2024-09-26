@@ -43,6 +43,7 @@ const budgetApiRoutes = require("./routes/budget");
 const contactsApiRoutes = require("./routes/contacts");
 const transfersApiRoutes = require("./routes/transfers");
 const transactionsApiRoutes = require("./routes/transactions");
+const historyRoutes = require("./routes/history");
 
 // Import middleware
 const authMiddleware = require("./middleware/auth");
@@ -57,6 +58,9 @@ app.use("/api/v1/users", authMiddleware, userApiRoutes);
 
 // Admin routes
 app.use("/api/v1/admin/users", authMiddleware("admin"), userApiRoutes);
+
+// History routes
+app.use("/api/v1/history", authMiddleware, historyRoutes);
 
 // Budget, contacts, transfers, and transactions routes
 app.use("/api/v1/budget", authMiddleware, budgetApiRoutes);
