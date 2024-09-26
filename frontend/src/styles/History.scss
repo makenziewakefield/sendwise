@@ -1,0 +1,81 @@
+@import './App.scss';
+
+.history-page {
+  h1 {
+    color: $primary-color;
+    margin-bottom: 20px;
+  }
+
+  .filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    button {
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 200px;
+      border: 1px solid #ddd;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: $primary-color;
+      color: white;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+    }
+
+    tr:nth-child(even) {
+      background-color: lighten($background-color, 5%);
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .history-page {
+    .filters {
+      flex-direction: column;
+
+      button, input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+
+    table {
+      font-size: 14px;
+
+      th, td {
+        padding: 8px;
+      }
+    }
+  }
+}

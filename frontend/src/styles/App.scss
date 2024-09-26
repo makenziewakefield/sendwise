@@ -1,0 +1,17 @@
+// Variables
+$primary-color: #007bff;
+$background-color: #f8f9fa;
+$text-color: #333;
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: $background-color;
+  color: $text-color;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
