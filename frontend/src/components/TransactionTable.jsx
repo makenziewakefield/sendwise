@@ -1,6 +1,6 @@
-// src/components/TransactionTable.jsx
 import React from "react";
 import { sortTransactions } from "../utils/sortUtils";
+import { formatCurrency } from "../utils/formatUtils";
 
 const TransactionTable = ({ transactions, sortConfig, requestSort }) => {
   const sortedTransactions = sortTransactions(transactions, sortConfig);
@@ -45,9 +45,9 @@ const TransactionTable = ({ transactions, sortConfig, requestSort }) => {
             <td>{new Date(transaction.date).toLocaleDateString()}</td>
             <td>{transaction.description}</td>
             <td>{transaction.category}</td>
-            <td>{transaction.amount_in}</td>
-            <td>{transaction.amount_out}</td>
-            <td>{transaction.balance}</td>
+            <td>{formatCurrency(transaction.amount_in)}</td>
+            <td>{formatCurrency(transaction.amount_out)}</td>
+            <td>{formatCurrency(transaction.balance)}</td>
           </tr>
         ))}
       </tbody>
