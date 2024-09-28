@@ -10,6 +10,11 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+
+    .date-filter, .amount-filter, .search-container {
+      margin-bottom: 10px;
+    }
 
     button {
       background-color: $primary-color;
@@ -24,10 +29,140 @@
       }
     }
 
-    input[type="text"] {
-      padding: 10px;
-      width: 200px;
-      border: 1px solid #ddd;
+    .date-filter {
+      position: relative;
+
+      .date-options {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        button {
+          display: block;
+          width: 100%;
+          text-align: left;
+          margin-bottom: 5px;
+          background-color: transparent;
+          color: $text-color;
+          padding: 5px 10px;
+
+          &:hover {
+            background-color: lighten($primary-color, 35%);
+          }
+        }
+
+        .custom-date-range {
+          margin-top: 10px;
+
+          label {
+            display: block;
+            margin-bottom: 5px;
+          }
+
+          input {
+            margin-bottom: 5px;
+            padding: 5px;
+            width: 100%;
+          }
+
+          button {
+            width: 100%;
+            background-color: $primary-color;
+            color: white;
+            margin-top: 5px;
+          }
+        }
+      }
+    }
+
+    .amount-filter {
+      position: relative;
+
+      .amount-options {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        z-index: 1000;
+        min-width: 250px;
+
+        .amount-inputs {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-bottom: 10px;
+
+          .amount-input {
+            flex: 1 1 45%;
+            min-width: 120px;
+
+            label {
+              display: block;
+              margin-bottom: 5px;
+            }
+
+            .input-wrapper {
+              position: relative;
+
+              .dollar-sign {
+                position: absolute;
+                left: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+              }
+
+              input {
+                width: 100%;
+                padding: 5px 5px 5px 20px;
+                border: 1px solid #ccc;
+              }
+            }
+
+            .error {
+              color: red;
+              font-size: 0.8em;
+            }
+          }
+        }
+
+        .amount-buttons {
+          display: flex;
+          justify-content: space-between;
+
+          button {
+            flex: 1;
+            margin: 0 5px;
+          }
+        }
+      }
+    }
+
+    .search-container {
+      position: relative;
+
+      input[type="text"] {
+        padding: 10px;
+        width: 200px;
+        border: 1px solid #ddd;
+      }
+
+      .clear-search {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+      }
     }
   }
 
@@ -56,6 +191,14 @@
       background-color: lighten($background-color, 5%);
     }
   }
+
+  .no-transactions {
+    text-align: center;
+    padding: 20px;
+    background-color: lighten($background-color, 2%);
+    border: 1px solid #ddd;
+    margin-top: 20px;
+  }
 }
 
 // Responsive design
@@ -64,9 +207,13 @@
     .filters {
       flex-direction: column;
 
-      button, input[type="text"] {
+      .date-filter, .amount-filter, .search-container {
         width: 100%;
         margin-bottom: 10px;
+      }
+
+      button, input[type="text"] {
+        width: 100%;
       }
     }
 
@@ -75,6 +222,20 @@
 
       th, td {
         padding: 8px;
+      }
+    }
+  }
+
+  .amount-filter .amount-options {
+    .amount-inputs {
+      flex-direction: column;
+    }
+
+    .amount-buttons {
+      flex-direction: column;
+      
+      button {
+        margin: 5px 0;
       }
     }
   }
