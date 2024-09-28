@@ -199,6 +199,48 @@
     border: 1px solid #ddd;
     margin-top: 20px;
   }
+
+  .custom-amount-range {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+
+    > div {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      label {
+        min-width: 40px;
+      }
+
+      .dollar-sign {
+        position: relative;
+        left: 20px;
+      }
+
+      input {
+        padding-left: 15px;
+        width: 100px;
+      }
+
+      .error {
+        color: red;
+        font-size: 0.8em;
+      }
+    }
+
+    .custom-amount-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+
+      button {
+        padding: 5px 10px;
+      }
+    }
+  }
 }
 
 // Responsive design
@@ -237,6 +279,15 @@
       button {
         margin: 5px 0;
       }
+    }
+  }
+
+  .custom-amount-range {
+    flex-direction: column;
+
+    .custom-fields, .custom-buttons {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 }

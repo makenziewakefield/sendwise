@@ -1,6 +1,6 @@
 import React from "react";
 import "./styles/App.scss";
-import History from "./components/HistoryPage";
+import History from "./pages/HistoryPage";
 
 function App() {
   return (
