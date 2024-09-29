@@ -63,9 +63,11 @@ app.use("/api/v1/admin/users", authMiddleware("admin"), userApiRoutes);
 // app.use('/api/v1/history', authMiddleware, historyRoutes);
 app.use('/api/v1/history', historyRoutes); // For testing without auth
 
+// app.use("/api/v1/contacts", authMiddleware, contactsApiRoutes);
+app.use('/api/v1/contacts', contactsApiRoutes) // For testing without auth
+
 // Budget, contacts, transfers, and transactions routes
 app.use("/api/v1/budget", authMiddleware, budgetApiRoutes);
-app.use("/api/v1/contacts", authMiddleware, contactsApiRoutes);
 app.use("/api/v1/transfers", authMiddleware, transfersApiRoutes);
 app.use("/api/v1/transactions", authMiddleware, transactionsApiRoutes);
 

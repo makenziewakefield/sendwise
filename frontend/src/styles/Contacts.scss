@@ -1,0 +1,76 @@
+@import './App.scss';
+
+.contacts-page {
+  h1 {
+    color: $primary-color;
+    margin-bottom: 20px;
+  }
+
+  button {
+    display: flex;
+    justify-content: center;
+    width: 30%;
+    margin: 10px 0;
+    background-color: $primary-color;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+  
+    &:hover {
+      background-color: darken($primary-color, 10%);
+      cursor: pointer;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 50px;
+  
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+  
+    th {
+      background-color: $primary-color;
+      color: white;
+    }
+  
+    tr:nth-child(even) {
+      background-color: lighten($background-color, 5%);
+    }
+  }
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 96%;
+}
+
+.search-container {
+  position: relative;
+  padding-bottom: 20px;
+
+  input[type="text"] {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ddd;
+  }
+
+  .clear-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+  }
+}
+
+
