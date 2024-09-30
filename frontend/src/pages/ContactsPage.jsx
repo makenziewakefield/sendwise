@@ -34,7 +34,7 @@ const ContactsPage = () => {
 
   return (
     <div className="contacts-page">
-      <h1>Contacts</h1>
+      <h2>Contacts</h2>
       <div className="search-container">
         <input
           type="text"
@@ -51,6 +51,7 @@ const ContactsPage = () => {
       />
     </div>
   );
+
 };
 
 export default ContactsPage;

@@ -1,0 +1,36 @@
+@import './App.scss';
+
+nav {
+  padding: 20px;
+}
+
+.nav-home-button {
+  margin-right: auto;
+  background-color: white;
+  color: $primary-color;
+  font-size: 30px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-buttons {
+  display: flex;
+  background-color: $primary-color;
+  border-radius: 20px;
+}
+
+.nav-buttons button {
+  margin-left: 10px;
+  padding: 12px 22px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-buttons button:hover {
+  border-bottom: 5px;
+}
