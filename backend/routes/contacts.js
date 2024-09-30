@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db/connection");
 
+
 // Admin route: Get all contacts
 router.get("/", async (req, res) => {
   try {
@@ -12,6 +13,7 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 // User route: Get contacts for a specific user
 router.get("/:userId", async (req, res) => {
@@ -27,6 +29,7 @@ router.get("/:userId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 // Add a new contact
 router.post("/", async (req, res) => {
@@ -46,6 +49,34 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+// Update a contact by ID
+router.put("/:id", async (req, res) => {
+  const contactId = req.params.id;
+  const { contact_name, contact_email, contact_phone, contact_nickname } = req.body;
+
+  if (!contact_name || !contact_email || !contact_phone) {
+    return res.status(400).json({ error: "Name, email, and phone are required" });
+  }
+
+  try {
+    const result = await pool.query(
+      "UPDATE contacts SET contact_name = $1, contact_email = $2, contact_phone = $3, contact_nickname = $4 WHERE id = $5 RETURNING *",
+      [contact_name, contact_email, contact_phone, contact_nickname, contactId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Contact not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error updating contact", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 // Delete a contact by ID
 router.delete("/:id", async (req, res) => {

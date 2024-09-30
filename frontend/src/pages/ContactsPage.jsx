@@ -6,6 +6,8 @@ import "../styles/Contacts.scss";
 const ContactsPage = () => {
   const { contacts, fetchContacts, updateContact, deleteContact } = useContacts();
   const [searchTerm, setSearchTerm] = useState('');
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingContact, setEditingContact] = useState(null);
   const [showAddContactForm, setShowAddContactForm] = useState(false);
   const [newContact, setNewContact] = useState({
     contact_name: '',
@@ -22,13 +24,18 @@ const ContactsPage = () => {
     contact.contact_name && contact.contact_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewHistory = (contact) => {
-    // Implement logic to view transaction history
+
+  // Handle input change when editing a contact
+  const handleChange = (field, value) => {
+    setEditingContact((prev) => ({ ...prev, [field]: value }));
   };
 
+
+  // Handle sending money (just a placeholder for now)
   const handleSendMoney = (contact) => {
     // Implement additional logic to handle sending money
   };
+
 
   // Handle form submission for adding a contact
   const handleAddContact = async () => {
@@ -67,10 +74,37 @@ const ContactsPage = () => {
     }
   };
 
+
+  // Handle editing a contact
+  const handleEditContact = (contact) => {
+    setEditingContact(contact); // Set the contact to be edited
+  };
+
+
+  // Handle canceling the edit
+  const handleCancelEdit = () => {
+    setEditingContact(null);
+  };
+
+
+  // Handle saving the updated contact
+  const handleUpdateContact = async () => {
+    if (!editingContact.contact_name || !editingContact.contact_email || !editingContact.contact_phone) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    await updateContact(editingContact.id, editingContact);
+    setEditingContact(null); // Exit edit mode
+  };
+
+
+  // Handle deleting a contact
   const handleDeleteContact = async (id) => {
     await deleteContact(id);
   };
 
+  
   return (
     <div className="contacts-page">
       <div className="page-top-container">
@@ -90,22 +124,26 @@ const ContactsPage = () => {
       {/* Contacts Table */}
       <ContactsTable
         contacts={filteredContacts}
+        editingContact={editingContact}
+        onEditContact={handleEditContact}
+        onCancelEdit={handleCancelEdit}
+        onUpdateContact={handleUpdateContact}
         onSendMoney={handleSendMoney}
-        onViewHistory={handleViewHistory}
         onDeleteContact={handleDeleteContact}
+        handleChange={handleChange}
       />
 
       {/* Add Contact Button */}
       {!showAddContactForm && (
         <button className="add-contact-buttons" onClick={() => setShowAddContactForm(true)}>
-          Add Contact
+          Add New Contact
         </button>
       )}
 
       {/* New Contact Form */}
       {showAddContactForm && (
         <div className="add-contact-form">
-          <h3>Add New Contact</h3>
+          <h3>Add New Contact </h3>
           <input
             type="text"
             placeholder="Name"
@@ -131,8 +169,8 @@ const ContactsPage = () => {
             onChange={e => setNewContact({ ...newContact, contact_nickname: e.target.value })}
           />
           <div className="add-contact-buttons">
-            <button onClick={handleAddContact}>Submit</button>
-            <button onClick={() => setShowAddContactForm(false)}>Cancel</button>
+            <button className="submit-button" onClick={handleAddContact}>Submit</button>
+            <button className="cancel-button" onClick={() => setShowAddContactForm(false)}>Cancel</button>
           </div>
         </div>
       )}

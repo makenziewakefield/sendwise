@@ -14,15 +14,15 @@ const useContacts = () => {
     }
   };
 
+
   // Add a new contact to the list
   const addContact = (newContact) => {
     setContacts([...contacts, newContact]);
   };
 
+
   // Update existing contact
   const updateContact = async (contactId, updatedContact) => {
-    console.log('Updating contact:', contactId, updatedContact);
-    
     try {
       const response = await fetch(`http://localhost:3000/api/v1/contacts/${contactId}`, {
         method: 'PUT',
@@ -34,7 +34,6 @@ const useContacts = () => {
   
       if (response.ok) {
         const updatedContactData = await response.json();
-        // Update state with the modified contact
         setContacts(prevContacts =>
           prevContacts.map(contact =>
             contact.id === contactId ? updatedContactData : contact
@@ -68,7 +67,6 @@ const useContacts = () => {
       console.error('Error deleting contact:', error);
     }
   };
-
 
   useEffect(() => {
     fetchContacts();
