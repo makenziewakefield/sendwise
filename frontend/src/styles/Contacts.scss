@@ -9,7 +9,6 @@
   button {
     display: flex;
     justify-content: center;
-    width: 30%;
     margin: 10px 0;
     background-color: $primary-color;
     color: white;
@@ -26,7 +25,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
   
     th, td {
       border: 1px solid #ddd;
@@ -45,15 +44,28 @@
   }
 }
 
+.page-top-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-contact-buttons {
+  width: 20%;
+}
+
 .button-container {
   display: flex;
   justify-content: space-between;
-  width: 96%;
+  width: 95%;
+
+  button {
+    width: 30%;
+  }
 }
 
 .search-container {
   position: relative;
-  padding-bottom: 20px;
+  margin-top: 25px;
 
   input[type="text"] {
     padding: 10px;
@@ -70,5 +82,27 @@
     border: none;
     color: #999;
     cursor: pointer;
+  }
+}
+
+.add-contact-form {
+  input {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ddd;
+  }
+
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: darken(#007bff, 10%);
+    }
   }
 }
