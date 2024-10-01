@@ -1,26 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/connection");
+const { getTransactionsByUserId } = require("../db/queries/transactions");
+const { getTransfersByUserId } = require("../db/queries/transfers");
 
-router.get("/", async (req, res) => {
+// Route to get both transactions and transfers for a specific user
+router.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
+
   try {
-    const query = `
-      SELECT t.date, t.description, t.category, t.amount_in, t.amount_out,
-              (SELECT SUM(amount_in) - SUM(amount_out)
-                FROM transactions
-                WHERE user_id = t.user_id AND date <= t.date) AS balance
-      FROM transactions t
-      WHERE t.user_id = $1
-      ORDER BY t.date DESC
-      LIMIT 15
-    `;
-    const result = await db.query(query, [req.user.id]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching transaction history" });
+    // Fetch transactions and transfers for the user
+    const transactions = await getTransactionsByUserId(userId);
+    const transfers = await getTransfersByUserId(userId);
+
+    // Combine both into a single response
+    const history = {
+      transactions,
+      transfers,
+    };
+
+    return res.json(history); // Send the combined data as a response
+  } catch (error) {
+    console.error("Error fetching history:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

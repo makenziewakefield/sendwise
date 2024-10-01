@@ -21,6 +21,10 @@ module.exports =
 
       next();
     } catch (err) {
+      // Optionally handle token expiration
+      if (err.name === "TokenExpiredError") {
+        return res.status(401).json({ msg: "Token has expired" });
+      }
       res.status(401).json({ msg: "Token is not valid" });
     }
   };
