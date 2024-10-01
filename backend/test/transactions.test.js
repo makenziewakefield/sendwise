@@ -160,4 +160,17 @@ describe("Transaction API Tests", () => {
         });
     });
   });
+
+  describe("GET /api/v1/transactions/:id", () => {
+    it("should return 404 for a non-existent transaction", (done) => {
+      request(app)
+        .get("/api/v1/transactions/999999") // Assuming this ID does not exist
+        .expect(404)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.body).to.have.property("error", "Transaction not found");
+          done();
+        });
+    });
+  });
 });
