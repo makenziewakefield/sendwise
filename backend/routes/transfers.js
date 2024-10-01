@@ -5,11 +5,10 @@ const {
   getTransfersByUserId,
   deleteTransferById,
   updateTransfer,
-} = require("../queries/transfers");
-const authMiddleware = require("../middleware/auth"); // Ensure you have the correct path to your middleware
+} = require("../db/queries/transfers");
 
 // User route: Get all transfers for a specific user
-router.get("/:userId", authMiddleware, async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
     const transfers = await getTransfersByUserId(req.params.userId);
     res.status(200).json(transfers);
@@ -20,7 +19,7 @@ router.get("/:userId", authMiddleware, async (req, res) => {
 });
 
 // Create a new transfer
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", async (req, res) => {
   const { userId, amount, description } = req.body;
   try {
     const newTransfer = await createTransfer(userId, amount, description);
@@ -32,7 +31,7 @@ router.post("/", authMiddleware, async (req, res) => {
 });
 
 // Update a transfer by ID
-router.put("/:id", authMiddleware, async (req, res) => {
+router.put("/:id", async (req, res) => {
   const transferId = req.params.id;
   const updatedData = req.body;
   try {
@@ -45,7 +44,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 });
 
 // Delete a transfer by ID
-router.delete("/:id", authMiddleware, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const transferId = req.params.id;
   try {
     const deletedTransfer = await deleteTransferById(transferId);

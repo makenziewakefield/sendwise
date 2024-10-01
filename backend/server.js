@@ -15,7 +15,7 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000" }));
 app.use(helmet());
 
 // Rate limiting for login attempts
@@ -45,29 +45,25 @@ const transfersApiRoutes = require("./routes/transfers");
 const transactionsApiRoutes = require("./routes/transactions");
 const historyRoutes = require("./routes/history");
 
-// Import middleware
-const authMiddleware = require("./middleware/auth");
-
 // Mount routes
 
 // Auth routes (login, register, etc.)
 app.use("/api/v1/auth", authRoutes);
 
 // User routes
-app.use("/api/v1/users", authMiddleware, userApiRoutes);
+app.use("/api/v1/users", userApiRoutes);
 
 // Admin routes
-app.use("/api/v1/admin/users", authMiddleware("admin"), userApiRoutes);
+app.use("/api/v1/admin/users", userApiRoutes);
 
 // History routes
-// app.use('/api/v1/history', authMiddleware, historyRoutes);
-app.use('/api/v1/history', historyRoutes); // For testing without auth
+app.use("/api/v1/history", historyRoutes); // For testing without auth
 
 // Budget, contacts, transfers, and transactions routes
-app.use("/api/v1/budget", authMiddleware, budgetApiRoutes);
-app.use("/api/v1/contacts", authMiddleware, contactsApiRoutes);
-app.use("/api/v1/transfers", authMiddleware, transfersApiRoutes);
-app.use("/api/v1/transactions", authMiddleware, transactionsApiRoutes);
+app.use("/api/v1/budget", budgetApiRoutes);
+app.use("/api/v1/contacts", contactsApiRoutes);
+app.use("/api/v1/transfers", transfersApiRoutes);
+app.use("/api/v1/transactions", transactionsApiRoutes);
 
 // Serve the React app
 app.get("/", (req, res) => {
@@ -82,7 +78,13 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+// Export the app (without calling app.listen)
+module.exports = app;
+
+// Only start the server if this file is run directly (not during tests)
+if (require.main === module) {
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
