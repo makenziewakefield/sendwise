@@ -9,6 +9,7 @@ const NavBar = ({ navigateTo }) => {
         <div>
           <button onClick={() => navigateTo('history')}>History</button>
           <button onClick={() => navigateTo('contacts')}>Contacts</button>
+          <button onClick={() => navigateTo('analytics')}>Analytics</button>
         </div>
       </div>
     </nav>

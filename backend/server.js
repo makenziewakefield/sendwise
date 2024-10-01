@@ -44,6 +44,7 @@ const contactsApiRoutes = require("./routes/contacts");
 const transfersApiRoutes = require("./routes/transfers");
 const transactionsApiRoutes = require("./routes/transactions");
 const historyRoutes = require("./routes/history");
+const analyticsRoutes = require("./routes/analytics"); 
 
 // Import middleware
 const authMiddleware = require("./middleware/auth");
@@ -70,6 +71,9 @@ app.use('/api/v1/contacts', contactsApiRoutes) // For testing without auth
 app.use("/api/v1/budget", authMiddleware, budgetApiRoutes);
 app.use("/api/v1/transfers", authMiddleware, transfersApiRoutes);
 app.use("/api/v1/transactions", authMiddleware, transactionsApiRoutes);
+
+// Analytics route
+app.use("/api/v1/analytics", analyticsRoutes); 
 
 // Serve the React app
 app.get("/", (req, res) => {

@@ -3,6 +3,7 @@ import History from "./pages/HistoryPage";
 import ContactsPage from "./pages/ContactsPage";
 import HomePage from "./pages/HomePage";
 import NavBar from "./components/NavBar";
+import AnalyticsPage from "./pages/AnalyticsPage";
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -18,6 +19,7 @@ function App() {
         {currentPage === 'home' && <HomePage />}
         {currentPage === 'contacts' && <ContactsPage />}
         {currentPage === 'history' && <History />}
+        {currentPage === 'analytics' && <AnalyticsPage />}
       </div>
     </div>
   );
