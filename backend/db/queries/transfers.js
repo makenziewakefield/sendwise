@@ -30,9 +30,14 @@ const getAllTransfers = async () => {
 // Function to get all transfers for a user
 const getTransfersByUserId = async (userId) => {
   const query = `
-    SELECT * FROM transfers
-    WHERE sender_id = $1 OR recipient_id = $1
-    ORDER BY date DESC;
+    SELECT t.*, 
+           s.username AS sender_username, 
+           r.username AS recipient_username
+    FROM transfers t
+    JOIN users s ON t.sender_id = s.user_id
+    JOIN users r ON t.recipient_id = r.user_id
+    WHERE t.sender_id = $1 OR t.recipient_id = $1
+    ORDER BY t.date DESC;
   `;
   const values = [userId];
 

@@ -128,30 +128,6 @@ describe("Transfer API Tests", () => {
     });
   });
 
-  describe("GET /api/v1/transfers/:userId/history", () => {
-    it("should retrieve transfer history for a specific user", (done) => {
-      request(app)
-        .get("/api/v1/transfers/1/history")
-        .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-
-          expect(res.body).to.be.an("array");
-          expect(res.body.length).to.be.at.least(1);
-
-          const transfer = res.body[0];
-          expect(transfer).to.have.property("id");
-          expect(transfer).to.have.property("sender_id");
-          expect(transfer).to.have.property("recipient_id");
-          expect(transfer).to.have.property("amount");
-          expect(transfer).to.have.property("description");
-          expect(transfer).to.have.property("method");
-
-          done();
-        });
-    });
-  });
-
   describe("DELETE /api/v1/transfers/:id", () => {
     it("should delete a transfer by ID", (done) => {
       const transferIdToDelete = 1; // Use a valid transfer ID for the test

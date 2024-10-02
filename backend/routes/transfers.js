@@ -100,17 +100,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get transfer history for a specific user
-router.get("/:userId/history", async (req, res) => {
-  try {
-    const transferHistory = await getTransferHistory(req.params.userId);
-    res.status(200).json(transferHistory);
-  } catch (error) {
-    console.error("Error fetching transfer history:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
 // Delete a transfer by ID
 router.delete("/:id", async (req, res) => {
   const transferId = req.params.id;

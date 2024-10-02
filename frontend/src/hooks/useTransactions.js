@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { mockTransactions } from "../mocks/mockTransactions";
+import axios from "axios";
 import {
   filterTransactionsByDate,
   filterTransactionsByCustomDate,
@@ -9,7 +9,7 @@ import { filterTransactionsByAmount } from "../utils/filterUtils";
 const useTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [dateFilter, setDateFilter] = useState("Last 15 days");
-const [amountFilter, setAmountFilter] = useState("Amount range");
+  const [amountFilter, setAmountFilter] = useState("Amount range");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({
     key: "date",
@@ -24,52 +24,47 @@ const [amountFilter, setAmountFilter] = useState("Amount range");
     to: "",
   });
 
+  // Fetch transactions from backend
+  const fetchTransactions = async () => {
+    try {
+      const response = await axios.get("/api/transactions");
+      setTransactions(response.data); // Assuming the API returns an array of transactions
+      setIsLoading(false);
+    } catch (err) {
+      setError("Error fetching transactions: " + err.message);
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    filterTransactions("Last 15 days");
+    fetchTransactions(); // Initial fetch from the backend
   }, []);
 
   useEffect(() => {
     applyFilters();
   }, [dateFilter, amountFilter]);
 
-  const filterTransactions = (option) => {
-    try {
-      const filteredByDate = filterTransactionsByDate(mockTransactions, option);
-      const filteredByAmount = filterTransactionsByAmount(
-        filteredByDate,
-        amountFilter
-      );
-      setTransactions(filteredByAmount);
-      setIsLoading(false);
-    } catch (err) {
-      setError("Error filtering transactions: " + err.message);
-      setIsLoading(false);
-    }
-  };
-
   const applyFilters = () => {
     let filteredTransactions;
 
-    // Check if custom date range is set
+    // Filter by date (predefined range or custom date)
     if (fromDate && toDate) {
       filteredTransactions = filterTransactionsByCustomDate(
-        mockTransactions,
+        transactions,
         fromDate,
         toDate
       );
     } else {
-      // Otherwise, filter by the predefined date option
-      filteredTransactions = filterTransactionsByDate(
-        mockTransactions,
-        dateFilter
-      );
+      filteredTransactions = filterTransactionsByDate(transactions, dateFilter);
     }
 
+    // Filter by amount
     filteredTransactions = filterTransactionsByAmount(
       filteredTransactions,
       amountFilter,
       amountFilter === "Custom" ? customAmountRange : null
     );
+
     setTransactions(filteredTransactions);
   };
 
@@ -83,23 +78,7 @@ const [amountFilter, setAmountFilter] = useState("Amount range");
 
   const handleCustomDateSearch = () => {
     if (fromDate && toDate) {
-      try {
-        const filteredTransactions = filterTransactionsByCustomDate(
-          mockTransactions,
-          fromDate,
-          toDate
-        );
-        const filteredByAmount = filterTransactionsByAmount(
-          filteredTransactions,
-          amountFilter
-        );
-        setTransactions(filteredByAmount);
-        setDateFilter(
-          `${fromDate.toLocaleDateString()} - ${toDate.toLocaleDateString()}`
-        );
-      } catch (err) {
-        setError("Error applying custom date filter: " + err.message);
-      }
+      applyFilters();
     }
   };
 
