@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import History from "./pages/HistoryPage";
 import ContactsPage from "./pages/ContactsPage";
 import HomePage from "./pages/HomePage";
+import SendMoney from "./pages/SendMoney"; // Import SendMoney page
 import NavBar from "./components/NavBar";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         {currentPage === 'home' && <HomePage />}
         {currentPage === 'contacts' && <ContactsPage />}
         {currentPage === 'history' && <History />}
+        {currentPage === 'send-money' && <SendMoney />} {/* Add SendMoney page */}
       </div>
     </div>
   );
