@@ -6,6 +6,7 @@ const {
   getUserById,
   addUser,
   updateUserById,
+  getUserBalance,
   deleteUserById,
 } = require("../db/queries/users");
 
