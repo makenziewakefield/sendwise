@@ -97,7 +97,7 @@ describe("Transfer API Tests", () => {
         .send({
           senderId: 1,
           recipientId: 2,
-          amount: 1000.0,
+          amount: 1000000.0,
           description: "Payment for services",
           method: "Bank",
         })
@@ -122,9 +122,69 @@ describe("Transfer API Tests", () => {
         .expect(404)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body).to.have.property("error", "User not found");
+          expect(res.body).to.have.property("error", "Sender not found");
           done();
         });
+    });
+
+    it("should return 404 if recipient does not exist", (done) => {
+      request(app)
+        .post("/api/v1/transfers")
+        .send({
+          senderId: 1,
+          recipientId: 9999,
+          amount: 50,
+          method: "Bank",
+          description: "Payment for services",
+        })
+        .expect(404)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.body).to.have.property("error", "Recipient not found");
+          done();
+        });
+    });
+
+    it("should update sender's balance after transfer", async () => {
+      // Get initial sender balance
+      let senderBalance = await getBalance(1);
+
+      // Perform transfer
+      await request(app)
+        .post("/api/v1/transfers")
+        .send({
+          senderId: 1,
+          recipientId: 2,
+          amount: 50.0,
+          method: "Bank",
+          description: "Payment for services",
+        })
+        .expect(201);
+
+      // Get updated sender balance
+      senderBalance = await getBalance(1);
+      expect(senderBalance).to.be.below(5000); // Initial balance was 5000
+    });
+
+    it("should update recipient's balance after transfer", async () => {
+      // Get initial recipient balance
+      let recipientBalance = await getBalance(2);
+
+      // Perform transfer
+      await request(app)
+        .post("/api/v1/transfers")
+        .send({
+          senderId: 1,
+          recipientId: 2,
+          amount: 50.0,
+          method: "Bank",
+          description: "Payment for services",
+        })
+        .expect(201);
+
+      // Get updated recipient balance
+      recipientBalance = await getBalance(2);
+      expect(recipientBalance).to.be.above(6000); // Initial balance was 6000
     });
   });
 
@@ -157,3 +217,11 @@ describe("Transfer API Tests", () => {
     });
   });
 });
+
+// Helper function to get user balance
+async function getBalance(userId) {
+  const response = await request(app)
+    .get(`/api/v1/users/${userId}/balance`)
+    .expect(200);
+  return response.body.balance;
+}

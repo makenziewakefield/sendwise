@@ -50,7 +50,7 @@ const getUserBalance = async (userId) => {
     if (rows.length === 0) {
       throw new Error("User not found");
     }
-    return rows[0].wallet_balance;
+    return parseFloat(rows[0].wallet_balance); // Convert to float
   } catch (err) {
     console.error("Error fetching user balance:", err);
     throw err;
