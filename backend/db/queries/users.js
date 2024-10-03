@@ -41,6 +41,22 @@ const updateUserById = (userId, { username, email, wallet_balance }) => {
     });
 };
 
+const getUserBalance = async (userId) => {
+  try {
+    const { rows } = await db.query(
+      "SELECT wallet_balance FROM users WHERE user_id = $1",
+      [userId]
+    );
+    if (rows.length === 0) {
+      throw new Error("User not found");
+    }
+    return rows[0].wallet_balance;
+  } catch (err) {
+    console.error("Error fetching user balance:", err);
+    throw err;
+  }
+};
+
 const deleteUserById = (userId) => {
   return db
     .query("DELETE FROM users WHERE user_id = $1 RETURNING *;", [userId])
@@ -54,5 +70,6 @@ module.exports = {
   getUserById,
   addUser,
   updateUserById,
+  getUserBalance,
   deleteUserById,
 };
