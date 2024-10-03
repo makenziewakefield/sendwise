@@ -22,9 +22,12 @@ const getTransactionsByUserId = async (userId) => {
   if (!userId || isNaN(userId)) {
     throw new Error("Invalid user ID");
   }
+
   const query = `
     SELECT 
       t.id,
+      t.user_id,  -- Ensure user_id is included
+      t.category_id,  -- Add category_id to the outer select
       COALESCE(c.name, 'Transfer') as category,
       t.amount_in,
       t.amount_out,
@@ -45,7 +48,7 @@ const getTransactionsByUserId = async (userId) => {
         WHERE recipient_id = $1
       ) t
     LEFT JOIN categories c ON t.category_id = c.id
-    ORDER BY t.date DESC
+    ORDER BY t.date DESC;
   `;
 
   const result = await db.query(query, [userId]);
