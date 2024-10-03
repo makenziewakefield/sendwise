@@ -31,13 +31,16 @@ const useTransactions = () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
-      console.log("Token from localStorage:", token); // Add this line
+      console.log(
+        "Token from localStorage:",
+        token ? "Token exists" : "No token"
+      );
 
       if (!token) {
         throw new Error("No authentication token found");
       }
       const userId = getUserIdFromToken(token);
-      console.log("User ID from token:", userId); // Add this line
+      console.log("User ID from token:", userId);
 
       if (!userId) {
         throw new Error("Invalid user ID from token");
@@ -45,6 +48,8 @@ const useTransactions = () => {
       const response = await axios.get(`/api/v1/transactions/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      console.log("API response:", response.data);
 
       // Process transactions to include transfers and calculate balance
       const processedTransactions = response.data.map((t, index, array) => {
@@ -63,7 +68,7 @@ const useTransactions = () => {
       setIsLoading(false);
     } catch (err) {
       console.error("Error fetching transactions:", err);
-      setError(err.response?.data?.error || err.message);
+      setError(err.message || "An error occurred while fetching transactions");
       setIsLoading(false);
     }
   };

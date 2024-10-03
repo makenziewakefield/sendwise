@@ -7,9 +7,12 @@ export const getUserIdFromToken = (token) => {
       return null;
     }
     const decodedToken = jwtDecode(token);
-    console.log("Decoded token:", decodedToken); // Add this line
+    console.log("Decoded token:", decodedToken);
     if (!decodedToken || !decodedToken.user || !decodedToken.user.id) {
-      console.error("Invalid token structure:", decodedToken);
+      console.error(
+        "Token does not contain expected user ID structure:",
+        decodedToken
+      );
       return null;
     }
     return decodedToken.user.id;

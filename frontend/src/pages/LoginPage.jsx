@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import "../styles/Login.scss";
 
 const LoginPage = ({ onLogin, navigateTo }) => {
@@ -7,20 +8,23 @@ const LoginPage = ({ onLogin, navigateTo }) => {
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/login",
-        { email, password }
-      );
-      localStorage.setItem("token", response.data.token);
-      onLogin();
-      navigateTo("home");
-    } catch (error) {
-      console.error("Login error:", error);
-      alert(error.response?.data?.msg || "Login failed. Please try again.");
-    }
-  };
+  e.preventDefault();
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/api/v1/auth/login",
+      { email, password }
+    );
+    const token = response.data.token;
+    console.log('Received token:', token);
+    console.log('Decoded token:', jwtDecode(token));
+    localStorage.setItem("token", token);
+    onLogin();
+    navigateTo("home");
+  } catch (error) {
+    console.error("Login error:", error);
+    alert(error.response?.data?.msg || "Login failed. Please try again.");
+  }
+};
 
   return (
     <div className="login-container">

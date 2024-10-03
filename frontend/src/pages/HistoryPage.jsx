@@ -82,7 +82,7 @@ const HistoryPage = () => {
   };
 
   if (isLoading) return <div className="loading">Loading transactions...</div>;
-  if (error) return <div className="error">{error}</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <div className="history-page">
