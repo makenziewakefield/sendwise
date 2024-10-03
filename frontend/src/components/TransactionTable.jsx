@@ -41,7 +41,7 @@ const TransactionTable = ({ transactions, sortConfig, requestSort }) => {
       </thead>
       <tbody>
         {sortedTransactions.map((transaction) => (
-          <tr key={transaction.id}>
+          <tr key={`${transaction.id}-${transaction.date}`}>
             <td>{new Date(transaction.date).toLocaleDateString()}</td>
             <td>{transaction.description}</td>
             <td>{transaction.category}</td>

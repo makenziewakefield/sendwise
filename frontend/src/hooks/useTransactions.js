@@ -29,47 +29,36 @@ const useTransactions = () => {
   // Fetch transactions from backend
   const fetchTransactions = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true); // Start loading
       const token = localStorage.getItem("token");
-      console.log(
-        "Token from localStorage:",
-        token ? "Token exists" : "No token"
-      );
 
       if (!token) {
         throw new Error("No authentication token found");
       }
+
       const userId = getUserIdFromToken(token);
-      console.log("User ID from token:", userId);
 
       if (!userId) {
         throw new Error("Invalid user ID from token");
       }
+
       const response = await axios.get(`/api/v1/transactions/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       console.log("API response:", response.data);
 
-      // Process transactions to include transfers and calculate balance
-      const processedTransactions = response.data.map((t, index, array) => {
-        const balance = array.slice(0, index + 1).reduce((acc, curr) => {
-          return acc + (curr.amount_in || 0) - (curr.amount_out || 0);
-        }, 0);
-        return {
-          ...t,
-          category: t.category || "Transfer",
-          balance: balance.toFixed(2),
-        };
-      });
+      // Ensure we have transactions in the response
+      if (!response.data || !Array.isArray(response.data)) {
+        throw new Error("No transactions found in the API response");
+      }
 
-      setTransactions(processedTransactions);
-      setFilteredTransactions(processedTransactions);
-      setIsLoading(false);
+      setTransactions(response.data); // Set transactions
     } catch (err) {
       console.error("Error fetching transactions:", err);
       setError(err.message || "An error occurred while fetching transactions");
-      setIsLoading(false);
+    } finally {
+      setIsLoading(false); // Stop loading in both success and error cases
     }
   };
 
@@ -89,21 +78,24 @@ const useTransactions = () => {
   ]);
 
   const applyFilters = () => {
-    let filtered = [...transactions];
+    let filtered = Array.isArray(transactions) ? [...transactions] : [];
+    console.log("Transactions before filtering:", filtered);
 
     // Filter by date (predefined range or custom date)
-    if (fromDate && toDate) {
-      filtered = filterTransactionsByCustomDate(filtered, fromDate, toDate);
-    } else {
-      filtered = filterTransactionsByDate(filtered, dateFilter);
-    }
+    if (filtered.length > 0) {
+      if (fromDate && toDate) {
+        filtered = filterTransactionsByCustomDate(filtered, fromDate, toDate);
+      } else {
+        filtered = filterTransactionsByDate(filtered, dateFilter);
+      }
 
-    // Filter by amount
-    filtered = filterTransactionsByAmount(
-      filtered,
-      amountFilter,
-      amountFilter === "Custom" ? customAmountRange : null
-    );
+      // Filter by amount
+      filtered = filterTransactionsByAmount(
+        filtered,
+        amountFilter,
+        amountFilter === "Custom" ? customAmountRange : null
+      )
+    }
 
     setFilteredTransactions(filtered);
   };
@@ -153,6 +145,9 @@ const useTransactions = () => {
     setAmountFilter,
     customAmountRange,
     setCustomAmountRange,
+    setTransactions,
+    fetchTransactions,
+    setError
   };
 };
 

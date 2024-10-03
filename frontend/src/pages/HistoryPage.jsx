@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/History.scss";
@@ -26,6 +26,9 @@ const HistoryPage = () => {
     setAmountFilter,
     customAmountRange,
     setCustomAmountRange,
+    setTransactions,
+    fetchTransactions,
+    setError,
   } = useTransactions();
 
   const [showDateOptions, setShowDateOptions] = useState(false);
@@ -80,6 +83,19 @@ const HistoryPage = () => {
       setShowAmountOptions(false); // Close the dropdown after selection
     }
   };
+
+  useEffect(() => {
+    const fetchAndSetTransactions = async () => {
+      try {
+        await fetchTransactions(); // Ensure this calls fetchTransactions
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchAndSetTransactions();
+  }, []);
 
   if (isLoading) return <div className="loading">Loading transactions...</div>;
   if (error) return <div className="error">Error: {error}</div>;
