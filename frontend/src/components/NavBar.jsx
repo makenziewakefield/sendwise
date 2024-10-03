@@ -1,7 +1,8 @@
 import React from "react";
-import '../styles/NavBar.scss';
+import PropTypes from "prop-types";
+import "../styles/NavBar.scss";
 
-const NavBar = ({ navigateTo }) => {
+const NavBar = ({ navigateTo, isLoggedIn, handleLogout }) => {
   return (
     <nav>
       <div className="nav-buttons">
@@ -12,10 +13,21 @@ const NavBar = ({ navigateTo }) => {
           <button onClick={() => navigateTo("send-money")}>Send Money</button>
           <button onClick={() => navigateTo("history")}>History</button>
           <button onClick={() => navigateTo("contacts")}>Contacts</button>
+          {isLoggedIn ? (
+            <button onClick={handleLogout}>Logout</button>
+          ) : (
+            <button onClick={() => navigateTo("login")}>Login/Signup</button>
+          )}
         </div>
       </div>
     </nav>
   );
+};
+
+NavBar.propTypes = {
+  navigateTo: PropTypes.func.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  handleLogout: PropTypes.func.isRequired,
 };
 
 export default NavBar;

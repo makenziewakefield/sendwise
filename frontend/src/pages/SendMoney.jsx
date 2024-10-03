@@ -1,35 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/SendMoney.scss";
 import useContacts from "../hooks/useContacts";
 import axios from "axios";
+import { isAuthenticated } from "../utils/auth";
 
 const SendMoney = () => {
   const { contacts, addNewContact } = useContacts();
   const [recipient, setRecipient] = useState("");
-  const [newContactName, setNewContactName] = useState(""); // State for new contact name
+  const [newContactName, setNewContactName] = useState("");
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState("Bank");
   const [description, setDescription] = useState("");
-  const [isAddingContact, setIsAddingContact] = useState(false); // Manage add contact state
+  const [isAddingContact, setIsAddingContact] = useState(false);
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // If adding a new contact, handle the creation of the contact first
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to send money.");
+      return;
+    }
+
     if (isAddingContact) {
       try {
-        const newContact = await addNewContact(newContactName); // Assume addNewContact adds the contact and returns it
-        setRecipient(newContact.id); // Set the recipient to the new contact's ID
+        const newContact = await addNewContact(newContactName);
+        setRecipient(newContact.id);
       } catch (error) {
         console.error("Error adding new contact:", error);
-        return; // Exit early if adding the contact fails
+        return;
       }
     }
 
-    // Prepare data for money transfer
     const data = {
-      senderId: 1,
+      senderId: 1, // You might want to get this from the token or user context
       recipientId: recipient,
       amount,
       method,
@@ -41,9 +46,23 @@ const SendMoney = () => {
       alert("Money sent successfully!");
     } catch (error) {
       console.error("Error sending money:", error);
+      alert("Failed to send money. Please try again.");
     }
   };
 
+  const checkAuthentication = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Redirect to login page
+      window.location.href = "/login";
+    }
+  };
+
+  // Call this function when the component mounts
+  React.useEffect(() => {
+    checkAuthentication();
+  }, []);
+  
   return (
     <div className="send-money-container">
       <h2>Send Money</h2>
@@ -52,7 +71,6 @@ const SendMoney = () => {
           <div className="input-field">
             <label htmlFor="recipient">Recipient</label>
             {isAddingContact ? (
-              // Show input for new contact if "Add New" is selected
               <input
                 type="text"
                 id="new-contact"
@@ -62,16 +80,15 @@ const SendMoney = () => {
                 required
               />
             ) : (
-              // Show dropdown if not adding a new contact
               <select
                 id="recipient"
                 value={recipient}
                 onChange={(e) => {
                   if (e.target.value === "add-new") {
-                    setIsAddingContact(true); // Switch to adding a new contact
+                    setIsAddingContact(true);
                   } else {
-                    setRecipient(e.target.value); // Set the recipient normally
-                    setIsAddingContact(false); // Ensure the form goes back to normal if needed
+                    setRecipient(e.target.value);
+                    setIsAddingContact(false);
                   }
                 }}
               >

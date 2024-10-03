@@ -6,7 +6,6 @@ const morgan = require("morgan");
 const path = require("path");
 const cors = require("cors");
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -15,16 +14,8 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(helmet());
-
-// Rate limiting for login attempts
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 login requests per windowMs
-  message: "Too many login attempts, please try again after 15 minutes",
-});
-app.use("/api/v1/auth/login", loginLimiter);
 
 app.use(
   "/styles",

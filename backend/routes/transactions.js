@@ -9,7 +9,7 @@ const {
   deleteTransactionById,
 } = require("../db/queries/transactions");
 
-// Get all transactions
+// Admin route: Get all transactions
 router.get("/", async (req, res) => {
   try {
     const transactions = await getAllTransactions();
@@ -23,7 +23,11 @@ router.get("/", async (req, res) => {
 // User route: Get all transactions for a specific user
 router.get("/user/:userId", async (req, res) => {
   try {
-    const transactions = await getTransactionsByUserId(req.params.userId);
+    const userId = req.params.userId;
+    if (!userId || userId === "undefined") {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+    const transactions = await getTransactionsByUserId(userId);
     res.status(200).json(transactions);
   } catch (error) {
     console.error("Error fetching transactions:", error);

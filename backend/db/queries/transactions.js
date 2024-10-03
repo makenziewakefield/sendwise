@@ -19,20 +19,37 @@ const getAllTransactions = async () => {
 
 // Function to get all transactions for a user
 const getTransactionsByUserId = async (userId) => {
-  const query = `
-    SELECT * FROM transactions
-    WHERE user_id = $1
-    ORDER BY date DESC;
-  `;
-  const values = [userId];
-
-  try {
-    const { rows } = await db.query(query, values);
-    return rows;
-  } catch (err) {
-    console.error("Error fetching transactions:", err);
-    throw err;
+  if (!userId || isNaN(userId)) {
+    throw new Error("Invalid user ID");
   }
+  const query = `
+    SELECT 
+      t.id,
+      COALESCE(c.name, 'Transfer') as category,
+      t.amount_in,
+      t.amount_out,
+      t.description,
+      t.date
+    FROM 
+      (
+        SELECT id, user_id, category_id, amount_in, amount_out, description, date
+        FROM transactions
+        WHERE user_id = $1
+        UNION ALL
+        SELECT id, sender_id as user_id, 13 as category_id, 0 as amount_in, amount as amount_out, description, date
+        FROM transfers
+        WHERE sender_id = $1
+        UNION ALL
+        SELECT id, recipient_id as user_id, 13 as category_id, amount as amount_in, 0 as amount_out, description, date
+        FROM transfers
+        WHERE recipient_id = $1
+      ) t
+    LEFT JOIN categories c ON t.category_id = c.id
+    ORDER BY t.date DESC
+  `;
+
+  const result = await db.query(query, [userId]);
+  return result.rows;
 };
 
 // Function to get a transaction by its ID

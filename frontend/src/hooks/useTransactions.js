@@ -5,9 +5,11 @@ import {
   filterTransactionsByCustomDate,
 } from "../utils/dateUtils";
 import { filterTransactionsByAmount } from "../utils/filterUtils";
+import { getUserIdFromToken } from "../utils/tokenUtils";
 
 const useTransactions = () => {
   const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [dateFilter, setDateFilter] = useState("Last 15 days");
   const [amountFilter, setAmountFilter] = useState("Amount range");
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,45 +29,78 @@ const useTransactions = () => {
   // Fetch transactions from backend
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get("/api/transactions");
-      setTransactions(response.data); // Assuming the API returns an array of transactions
+      setIsLoading(true);
+      const token = localStorage.getItem("token");
+      console.log("Token from localStorage:", token); // Add this line
+
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+      const userId = getUserIdFromToken(token);
+      console.log("User ID from token:", userId); // Add this line
+
+      if (!userId) {
+        throw new Error("Invalid user ID from token");
+      }
+      const response = await axios.get(`/api/v1/transactions/user/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Process transactions to include transfers and calculate balance
+      const processedTransactions = response.data.map((t, index, array) => {
+        const balance = array.slice(0, index + 1).reduce((acc, curr) => {
+          return acc + (curr.amount_in || 0) - (curr.amount_out || 0);
+        }, 0);
+        return {
+          ...t,
+          category: t.category || "Transfer",
+          balance: balance.toFixed(2),
+        };
+      });
+
+      setTransactions(processedTransactions);
+      setFilteredTransactions(processedTransactions);
       setIsLoading(false);
     } catch (err) {
-      setError("Error fetching transactions: " + err.message);
+      console.error("Error fetching transactions:", err);
+      setError(err.response?.data?.error || err.message);
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTransactions(); // Initial fetch from the backend
+    fetchTransactions();
   }, []);
 
   useEffect(() => {
     applyFilters();
-  }, [dateFilter, amountFilter]);
+  }, [
+    dateFilter,
+    amountFilter,
+    transactions,
+    fromDate,
+    toDate,
+    customAmountRange,
+  ]);
 
   const applyFilters = () => {
-    let filteredTransactions;
+    let filtered = [...transactions];
 
     // Filter by date (predefined range or custom date)
     if (fromDate && toDate) {
-      filteredTransactions = filterTransactionsByCustomDate(
-        transactions,
-        fromDate,
-        toDate
-      );
+      filtered = filterTransactionsByCustomDate(filtered, fromDate, toDate);
     } else {
-      filteredTransactions = filterTransactionsByDate(transactions, dateFilter);
+      filtered = filterTransactionsByDate(filtered, dateFilter);
     }
 
     // Filter by amount
-    filteredTransactions = filterTransactionsByAmount(
-      filteredTransactions,
+    filtered = filterTransactionsByAmount(
+      filtered,
       amountFilter,
       amountFilter === "Custom" ? customAmountRange : null
     );
 
-    setTransactions(filteredTransactions);
+    setFilteredTransactions(filtered);
   };
 
   const handleDateFilterChange = (option) => {
@@ -95,7 +130,7 @@ const useTransactions = () => {
   };
 
   return {
-    transactions,
+    transactions: filteredTransactions,
     dateFilter,
     amountFilter,
     searchTerm,
