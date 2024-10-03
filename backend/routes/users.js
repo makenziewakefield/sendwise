@@ -86,6 +86,17 @@ router.put("/:userId", (req, res) => {
     });
 });
 
+// Get user balance
+router.get("/:userId/balance", async (req, res) => {
+  try {
+    const balance = await getUserBalance(req.params.userId);
+    res.status(200).json({ balance });
+  } catch (error) {
+    console.error("Error fetching user balance:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Delete a user by ID
 router.delete("/:userId", (req, res) => {
   const { userId } = req.params;
