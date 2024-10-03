@@ -47,26 +47,36 @@ router.post("/", async (req, res) => {
     });
 
     // Step 1: Get the sender's current wallet balance
-    const { rows: balanceRows } = await db.query(
+    const { rows: senderRows } = await db.query(
       "SELECT wallet_balance FROM users WHERE user_id = $1",
       [senderId]
     );
 
-    console.log("Sender balance query result:", balanceRows);
+    console.log("Sender balance query result:", senderRows);
 
-    // If user is not found, return an error
-    if (balanceRows.length === 0) {
-      return res.status(404).json({ error: "User not found" });
+    // If sender is not found, return an error
+    if (senderRows.length === 0) {
+      return res.status(404).json({ error: "Sender not found" });
     }
 
-    const senderBalance = balanceRows[0].wallet_balance;
+    const senderBalance = senderRows[0].wallet_balance;
 
-    // Step 2: Check if the amount exceeds the sender's balance
+    // Step 2: Check if recipient exists
+    const { rows: recipientRows } = await db.query(
+      "SELECT user_id FROM users WHERE user_id = $1",
+      [recipientId]
+    );
+
+    if (recipientRows.length === 0) {
+      return res.status(404).json({ error: "Recipient not found" });
+    }
+
+    // Step 3: Check if amount exceeds the sender's balance
     if (amount > senderBalance) {
       return res.status(400).json({ error: "Insufficient funds" });
     }
 
-    // Step 3: Create transfer
+    // Step 4: Create transfer
     const newTransfer = await createTransfer(
       senderId,
       recipientId,
@@ -77,16 +87,16 @@ router.post("/", async (req, res) => {
 
     console.log("New transfer created:", newTransfer);
 
-    // Step 4: Update sender's balance (deduct amount)
+    // Step 5: Update sender's balance (deduct amount)
     await updateUserBalance(senderId, -amount);
 
-    // Step 5: Update recipient's balance (add amount)
+    // Step 6: Update recipient's balance (add amount)
     await updateUserBalance(recipientId, amount);
 
-    // Step 6: Log the transaction for sender
+    // Step 7: Log the transaction for sender
     await createTransferTransaction(senderId, amount, description, false);
 
-    // Step 7: Log the transaction for recipient
+    // Step 8: Log the transaction for recipient
     await createTransferTransaction(recipientId, amount, description, true);
 
     // Send the newly created transfer as a response
@@ -99,6 +109,7 @@ router.post("/", async (req, res) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
+
 
 // Delete a transfer by ID
 router.delete("/:id", async (req, res) => {
