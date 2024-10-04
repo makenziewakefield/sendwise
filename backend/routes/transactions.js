@@ -9,6 +9,8 @@ const {
   deleteTransactionById,
 } = require("../db/queries/transactions");
 
+const { getBalance, updateUserBalance } = require("../db/queries/users");
+
 // Admin route: Get all transactions
 router.get("/", async (req, res) => {
   try {
@@ -53,7 +55,9 @@ router.get("/:id", async (req, res) => {
 // Create a new transaction
 router.post("/", async (req, res) => {
   const { userId, amount, category, description, isIncoming } = req.body;
+  
   try {
+    // Create the transaction
     const newTransaction = await createTransaction(
       userId,
       amount,
@@ -61,7 +65,17 @@ router.post("/", async (req, res) => {
       description,
       isIncoming
     );
-    res.status(201).json(newTransaction);
+
+    // Update the user balance
+    await updateUserBalance(userId, isIncoming ? amount : -amount);
+
+    // Get the updated balance
+    const updatedBalance = await getBalance(userId);
+
+    res.status(201).json({
+      transaction: newTransaction,
+      updatedBalance: updatedBalance
+    });
   } catch (error) {
     console.error("Error creating transaction:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -74,7 +88,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const deletedTransaction = await deleteTransactionById(transactionId);
     if (deletedTransaction) {
-      res.status(200).json({ message: "Transaction deleted successfully" });
+      res.status(200).json({ message: "Transaction deleted successfully", transaction: deletedTransaction });
     } else {
       res.status(404).json({ error: "Transaction not found" });
     }

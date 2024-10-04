@@ -41,7 +41,7 @@ const updateUserById = (userId, { username, email, wallet_balance }) => {
     });
 };
 
-const getUserBalance = async (userId) => {
+const getBalance = async (userId) => {
   try {
     const { rows } = await db.query(
       "SELECT wallet_balance FROM users WHERE user_id = $1",
@@ -53,6 +53,25 @@ const getUserBalance = async (userId) => {
     return parseFloat(rows[0].wallet_balance); // Convert to float
   } catch (err) {
     console.error("Error fetching user balance:", err);
+    throw err;
+  }
+};
+
+// Function to update wallet balance
+const updateUserBalance = async (userId, amount) => {
+  const query = `
+    UPDATE users
+    SET wallet_balance = wallet_balance + $2
+    WHERE user_id = $1
+    RETURNING wallet_balance;
+  `;
+  const values = [userId, amount];
+
+  try {
+    const { rows } = await db.query(query, values);
+    return rows[0].wallet_balance;
+  } catch (err) {
+    console.error("Error updating user balance:", err);
     throw err;
   }
 };
@@ -70,6 +89,7 @@ module.exports = {
   getUserById,
   addUser,
   updateUserById,
-  getUserBalance,
+  getBalance,
   deleteUserById,
+  updateUserBalance,
 };

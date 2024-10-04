@@ -168,7 +168,8 @@ describe("Transfer API Tests", () => {
 
     it("should update recipient's balance after transfer", async () => {
       // Get initial recipient balance
-      let recipientBalance = await getBalance(2);
+      let initialBalance = await getBalance(2);
+      console.log("Initial balance for recipient:", initialBalance);
 
       // Perform transfer
       await request(app)
@@ -183,8 +184,8 @@ describe("Transfer API Tests", () => {
         .expect(201);
 
       // Get updated recipient balance
-      recipientBalance = await getBalance(2);
-      expect(recipientBalance).to.be.above(6000); // Initial balance was 6000
+      let recipientBalance = await getBalance(2);
+      expect(recipientBalance).to.equal(initialBalance + 50); // Initial balance was 6000
     });
   });
 

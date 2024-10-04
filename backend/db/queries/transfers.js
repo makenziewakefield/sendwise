@@ -76,48 +76,6 @@ const createTransfer = async (
   }
 };
 
-// Function to update wallet balance
-const updateUserBalance = async (userId, amount) => {
-  const query = `
-    UPDATE users
-    SET wallet_balance = wallet_balance + $2
-    WHERE user_id = $1
-    RETURNING wallet_balance;
-  `;
-  const values = [userId, amount];
-
-  try {
-    const { rows } = await db.query(query, values);
-    return rows[0].wallet_balance;
-  } catch (err) {
-    console.error("Error updating user balance:", err);
-    throw err;
-  }
-};
-
-// Function to get transfer history
-const getTransferHistory = async (userId) => {
-  const query = `
-    SELECT t.*, 
-           s.username AS sender_username, 
-           r.username AS recipient_username
-    FROM transfers t
-    JOIN users s ON t.sender_id = s.user_id
-    JOIN users r ON t.recipient_id = r.user_id
-    WHERE t.sender_id = $1 OR t.recipient_id = $1
-    ORDER BY t.date DESC;
-  `;
-  const values = [userId];
-
-  try {
-    const { rows } = await db.query(query, values);
-    return rows;
-  } catch (err) {
-    console.error("Error fetching transfer history:", err);
-    throw err;
-  }
-};
-
 // Function to log a transaction for transfers
 const createTransferTransaction = async (userId, amount, description, isIncoming) => {
   const query = `
@@ -167,8 +125,6 @@ module.exports = {
   getAllTransfers,
   getTransfersByUserId,
   createTransfer,
-  getTransferHistory,
-  updateUserBalance,
   createTransferTransaction,
   deleteTransferById,
 };

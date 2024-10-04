@@ -6,7 +6,7 @@ const {
   getUserById,
   addUser,
   updateUserById,
-  getUserBalance,
+  getBalance,
   deleteUserById,
 } = require("../db/queries/users");
 
@@ -90,7 +90,7 @@ router.put("/:userId", (req, res) => {
 // Get user balance
 router.get("/:userId/balance", async (req, res) => {
   try {
-    const balance = await getUserBalance(req.params.userId);
+    const balance = await getBalance(req.params.userId);
     res.status(200).json({ balance });
   } catch (error) {
     console.error("Error fetching user balance:", error);

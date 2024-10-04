@@ -5,11 +5,11 @@ const {
   getAllTransfers,
   getTransfersByUserId,
   createTransfer,
-  getTransferHistory,
-  updateUserBalance,
   createTransferTransaction,
   deleteTransferById,
 } = require("../db/queries/transfers");
+
+const { updateUserBalance } = require("../db/queries/users");
 
 // Admin route: Get all transfer histories (for admins)
 router.get("/history", async (req, res) => {
@@ -117,7 +117,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const deletedTransfer = await deleteTransferById(transferId);
     if (!deletedTransfer) {
-      return res.status(404).json({ error: "Transfer not found" }); // Change here
+      return res.status(404).json({ error: "Transfer not found" });
     }
     res
       .status(200)

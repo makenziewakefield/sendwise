@@ -5,7 +5,7 @@ const app = require("../server");
 const { exec } = require("child_process");
 
 describe("Transaction API Tests", () => {
-  before(function (done) {
+  beforeEach(function (done) {
     this.timeout(10000); // Increase timeout to 10 seconds
     exec("npm run db:reset", (error, stdout, stderr) => {
       if (error) {
@@ -76,10 +76,21 @@ describe("Transaction API Tests", () => {
         .expect(201)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body).to.have.property("id");
-          expect(res.body.amount_in).to.equal("100.00");
-          expect(res.body.amount_out).to.equal("0.00");
-          expect(res.body.description).to.equal("Salary");
+
+          // Check the response structure
+          expect(res.body).to.have.property("transaction");
+          expect(res.body).to.have.property("updatedBalance");
+
+          // Check the properties of the transaction object
+          const { transaction } = res.body;
+          expect(transaction).to.have.property("id");
+          expect(transaction.amount_in).to.equal("100.00");
+          expect(transaction.amount_out).to.equal("0.00");
+          expect(transaction.description).to.equal("Salary");
+
+          // Optionally, you can check the updated balance as well
+          expect(res.body.updatedBalance).to.be.a("number");
+
           done();
         });
     });
@@ -97,12 +108,109 @@ describe("Transaction API Tests", () => {
         .expect(201)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body).to.have.property("id");
-          expect(res.body.amount_in).to.equal("0.00");
-          expect(res.body.amount_out).to.equal("50.00");
-          expect(res.body.description).to.equal("Dinner at restaurant");
+
+          // Check the response structure
+          expect(res.body).to.have.property("transaction");
+          expect(res.body).to.have.property("updatedBalance");
+
+          // Check the properties of the transaction object
+          const { transaction } = res.body;
+          expect(transaction).to.have.property("id");
+          expect(transaction.amount_in).to.equal("0.00");
+          expect(transaction.amount_out).to.equal("50.00");
+          expect(transaction.description).to.equal("Dinner at restaurant");
+
+          // Optionally, you can check the updated balance as well
+          expect(res.body.updatedBalance).to.be.a("number");
+
           done();
         });
+    });
+
+    it("should reduce the user's balance after an expense", async () => {
+      // Get the initial balance for user with ID 1
+      let initialBalance = await getBalance(1);
+      console.log("Initial user's balance:", initialBalance);
+
+      // Perform an outgoing transaction (expense)
+      await request(app)
+        .post("/api/v1/transactions")
+        .send({
+          userId: 1,
+          amount: 100.0, // The amount of the expense
+          category: 2, // Assuming category 2 is for 'Groceries' or another expense type
+          description: "Grocery shopping",
+          isIncoming: false, // This indicates that the transaction is an outgoing expense
+        })
+        .expect(201);
+
+      // Get the updated balance after the transaction
+      let updatedBalance = await getBalance(1);
+      console.log("Updated balance:", updatedBalance);
+
+      // Ensure the balance is reduced by the transaction amount
+      expect(updatedBalance).to.equal(4900);
+    });
+
+    it("should update the sender's balance after a transfer", async () => {
+      // Get the initial balance for user with ID 1 (sender)
+      let initialSenderBalance = await getBalance(1);
+      console.log("Initial sender balance:", initialSenderBalance);
+
+      // Perform a transfer
+      await request(app)
+        .post("/api/v1/transfers")
+        .send({
+          senderId: 1,
+          recipientId: 2,
+          amount: 50.0,
+          method: "Bank",
+          description: "Payment for services",
+        })
+        .expect(201);
+
+      // Get the updated balance for the sender after the transfer
+      let updatedSenderBalance = await getBalance(1);
+      console.log("Updated sender balance:", updatedSenderBalance);
+
+      // Ensure the sender's balance is reduced by the transfer amount
+      expect(updatedSenderBalance).to.equal(4950);
+
+      // Get the initial balance for user with ID 2 (recipient)
+      let initialRecipientBalance = await getBalance(2);
+      console.log("Initial recipient balance:", initialRecipientBalance);
+
+      // Get the updated balance for the recipient after the transfer
+      let updatedRecipientBalance = await getBalance(2);
+      console.log("Updated recipient balance:", updatedRecipientBalance);
+
+      // Ensure the recipient's balance is increased by the transfer amount
+      expect(updatedRecipientBalance).to.equal(6050);
+    });
+
+    it("should increase the user's balance after an incoming transaction", async () => {
+      // Get the initial balance for user with ID 1
+      let initialBalance = await getBalance(1);
+      console.log("Initial balance:", initialBalance);
+
+      // Perform an incoming transaction
+      await request(app)
+        .post("/api/v1/transactions")
+        .send({
+          userId: 1,
+          amount: 100.0,
+          category: 1,
+          description: "Salary",
+          isIncoming: true,
+        })
+        .expect(201);
+
+      // Get the updated balance after the transaction
+      let updatedBalance = await getBalance(1);
+      console.log("Updated balance:", updatedBalance);
+
+      // Ensure the balance is increased by the transaction amount
+      expect(updatedBalance).to.be.above(initialBalance);
     });
   });
 
@@ -149,13 +257,17 @@ describe("Transaction API Tests", () => {
   });
 
   describe("DELETE /api/v1/transactions/:id", () => {
-    it("should delete a transaction", (done) => {
+    it("should delete a transaction by ID", (done) => {
+      const transactionIdToDelete = 1;
       request(app)
-        .delete("/api/v1/transactions/102")
+        .delete(`/api/v1/transactions/${transactionIdToDelete}`)
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body.message).to.equal("Transaction deleted successfully");
+
+          expect(res.body).to.have.property("message"); // Check for the message property
+          expect(res.body.message).to.equal("Transaction deleted successfully"); // Check the message
+          expect(res.body).to.have.property("transaction"); // Check for deleted transaction
           done();
         });
     });
@@ -174,3 +286,11 @@ describe("Transaction API Tests", () => {
     });
   });
 });
+
+// Helper function to get user balance
+async function getBalance(userId) {
+  const response = await request(app)
+    .get(`/api/v1/users/${userId}/balance`)
+    .expect(200);
+  return parseFloat(response.body.balance);
+}
