@@ -118,7 +118,7 @@ async function generateRecipientTransfersChart(senderId) {
         label: 'Total Transferred Amount',
         data,
         backgroundColor: '#FF6384',
-        borderColor: '#FFFFFF',
+        borderColor: '#000000',
         borderWidth: 1
       }]
     },
@@ -218,13 +218,13 @@ async function generateBudgetTrackingChart(userId) {
         label: 'Remaining Budget by Week',
         data: remainingBudgetByWeek,
         backgroundColor: remainingBudgetByWeek.map(value => value >= 0 ? '#36A2EB' : '#FF6384'),
-        borderColor: '#FFFFFF',
+        borderColor: '#000000',
         borderWidth: 1
       }, {
         label: 'Weekly Spending',
         data: weeklySpendingByWeek,
         backgroundColor: '#FFA500',
-        borderColor: '#FFFFFF',
+        borderColor: '#000000',
         borderWidth: 1
       }]
     },
@@ -297,7 +297,7 @@ async function generateSpendingByCategoryChart(userId) {
           '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
           '#FF9F40', '#E7E9ED', '#B23C32', '#5B9279', '#FF85F1'
         ],
-        borderColor: '#FFFFFF',
+        borderColor: '#000000',
         borderWidth: 1,
       }],
     },
@@ -347,7 +347,7 @@ async function generateSpendingLastWeekChart(userId) {
         label: 'Spending Over the Last Week',
         data,
         fill: false,
-        borderColor: '#36A2EB',
+        borderColor: '#000000',
         backgroundColor: '#36A2EB',
         tension: 0.1
       }]
@@ -408,7 +408,7 @@ async function generateSpendingLastMonthChart(userId) {
         label: 'Spending Over the Last Month',
         data,
         fill: false,
-        borderColor: '#FF6384',
+        borderColor: '#000000',
         backgroundColor: '#FF6384',
         tension: 0.1
       }]
@@ -470,7 +470,7 @@ async function generateIncomingTransfersChart(recipientId) {
         label: 'Total Received Amount',
         data,
         backgroundColor: '#36A2EB',
-        borderColor: '#FFFFFF',
+        borderColor: '#000000',
         borderWidth: 1
       }]
     },

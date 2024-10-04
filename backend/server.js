@@ -55,7 +55,7 @@ const authMiddleware = require("./middleware/auth");
 app.use("/api/v1/auth", authRoutes);
 
 // User routes
-app.use("/api/v1/users", authMiddleware, userApiRoutes);
+app.use("/api/v1/users", userApiRoutes);
 
 // Admin routes
 app.use("/api/v1/admin/users", authMiddleware("admin"), userApiRoutes);
