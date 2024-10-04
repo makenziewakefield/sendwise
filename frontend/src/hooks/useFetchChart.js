@@ -24,7 +24,7 @@ const useFetchChart = (endpoint, type = 'line', labels = [], data = []) => {
     };
 
     fetchChart();
-  }, [endpoint]); // Only trigger when the endpoint changes
+  }, [endpoint]); 
 
   return { chartUrl, loading, error };
 };

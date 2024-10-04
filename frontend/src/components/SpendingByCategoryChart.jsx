@@ -14,7 +14,7 @@ const SpendingByCategoryChart = ({ userId }) => {
 
   return (
     <div>
-      <h2>Spending by Category</h2>
+      <h2 style={{ textAlign: 'center' }}>Spending by Category</h2>
       {chartUrl && <img src={chartUrl} alt="Spending by Category Chart" />}
     </div>
   );

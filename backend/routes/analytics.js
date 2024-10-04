@@ -1,11 +1,65 @@
 const express = require('express');
-const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const router = express.Router();
-const pool = require('../db/connection'); // PostgreSQL connection
 
-const width = 800;
-const height = 600;
-const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height });
+const { 
+  generateSpendingByCategoryChart, 
+  generateSpendingLastWeekChart, 
+  generateSpendingLastMonthChart,
+  generateBudgetTrackingChart,
+  generateRecipientTransfersChart,
+  generateIncomingTransfersChart
+} = require('../services/chartService');
+
+router.get('/incoming-transfers-chart', async (req, res) => {
+  const { user_id } = req.query;
+
+  if (!user_id) {
+    return res.status(400).json({ message: 'Missing user_id query parameter' });
+  }
+
+  try {
+    const imageBuffer = await generateIncomingTransfersChart(user_id);
+    res.type('image/png');
+    res.send(imageBuffer);
+  } catch (error) {
+    console.error('Error generating chart:', error);
+    res.status(500).json({ message: 'Failed to generate chart' });
+  }
+});
+
+router.get('/budget-tracking-chart', async (req, res) => {
+  const { user_id } = req.query;
+
+  if (!user_id) {
+    return res.status(400).json({ message: 'Missing user_id query parameter' });
+  }
+
+  try {
+    const imageBuffer = await generateBudgetTrackingChart(user_id);
+    res.type('image/png');
+    res.send(imageBuffer);
+  } catch (error) {
+    console.error('Error generating chart:', error);
+    res.status(500).json({ message: 'Failed to generate chart' });
+  }
+});
+
+router.get('/recipient-transfers-chart', async (req, res) => {
+  const { sender_id } = req.query;
+
+  if (!sender_id) {
+    return res.status(400).json({ message: 'Missing sender_id query parameter' });
+  }
+
+  try {
+    const imageBuffer = await generateRecipientTransfersChart(sender_id);
+    res.type('image/png');
+    res.send(imageBuffer);
+  } catch (error) {
+    console.error('Error generating chart:', error);
+    res.status(500).json({ message: 'Failed to generate chart' });
+  }
+});
 
 // Route to get spending by category for a pie chart
 router.get('/spending-by-category-chart', async (req, res) => {
@@ -16,38 +70,43 @@ router.get('/spending-by-category-chart', async (req, res) => {
   }
 
   try {
-    const result = await pool.query(`
-      SELECT category, SUM(amount_out) AS total_spent
-      FROM transactions
-      WHERE user_id = $1
-      GROUP BY category
-    `, [user_id]);
+    const imageBuffer = await generateSpendingByCategoryChart(user_id);
+    res.type('image/png');
+    res.send(imageBuffer);
+  } catch (error) {
+    console.error('Error generating chart:', error);
+    res.status(500).json({ message: 'Failed to generate chart' });
+  }
+});
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'No spending data found for this user' });
-    }
+// Route for spending over the last week (line chart)
+router.get('/spending-last-week-chart', async (req, res) => {
+  const { user_id } = req.query;
 
-    const spendingData = result.rows;
-    const labels = spendingData.map(item => item.category);
-    const data = spendingData.map(item => parseFloat(item.total_spent));
-    const chartConfig = {
-      type: 'pie',
-      data: {
-        labels,
-        datasets: [
-          {
-            data,
-            backgroundColor: [
-              '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-              '#FF9F40', '#E7E9ED', '#B23C32', '#5B9279', '#FF85F1'
-            ]
-          }
-        ]
-      }
-    };
+  if (!user_id) {
+    return res.status(400).json({ message: 'Missing user_id query parameter' });
+  }
 
-    const imageBuffer = await chartJSNodeCanvas.renderToBuffer(chartConfig);
+  try {
+    const imageBuffer = await generateSpendingLastWeekChart(user_id);
+    res.type('image/png');
+    res.send(imageBuffer);
+  } catch (error) {
+    console.error('Error generating chart:', error);
+    res.status(500).json({ message: 'Failed to generate chart' });
+  }
+});
 
+// Route for spending over the last month (line chart)
+router.get('/spending-last-month-chart', async (req, res) => {
+  const { user_id } = req.query;
+
+  if (!user_id) {
+    return res.status(400).json({ message: 'Missing user_id query parameter' });
+  }
+
+  try {
+    const imageBuffer = await generateSpendingLastMonthChart(user_id);
     res.type('image/png');
     res.send(imageBuffer);
   } catch (error) {

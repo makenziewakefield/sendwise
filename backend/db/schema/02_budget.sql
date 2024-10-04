@@ -2,5 +2,5 @@ DROP TABLE IF EXISTS budget CASCADE;
 CREATE TABLE budget (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
-    total_budget DECIMAL(10, 2) NOT NULL
+    month_budget DECIMAL(10, 2) NOT NULL
 );
