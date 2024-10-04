@@ -1,5 +1,13 @@
+// /frontend/src/App.jsx
+
 import React, { useState, useEffect } from "react";
-import History from "./pages/HistoryPage";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import HistoryPage from "./pages/HistoryPage";
 import ContactsPage from "./pages/ContactsPage";
 import HomePage from "./pages/HomePage";
 import SendMoney from "./pages/SendMoney";
@@ -12,7 +20,6 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("home");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -22,10 +29,6 @@ function App() {
     }
   }, []);
 
-  const navigateTo = (page) => {
-    setCurrentPage(page);
-  };
-
   const handleLogin = () => {
     setIsLoggedIn(true);
   };
@@ -33,44 +36,49 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
-    navigateTo("home");
   };
 
   return (
-    <div className="App">
-      <NavBar
-        navigateTo={navigateTo}
-        isLoggedIn={isLoggedIn}
-        handleLogout={handleLogout}
-      />
-      <div>
-        {currentPage === "home" && <HomePage />}
-        {currentPage === "send-money" &&
-          (isLoggedIn ? (
-            <SendMoney />
-          ) : (
-            <LoginPage onLogin={handleLogin} navigateTo={navigateTo} />
-          ))}
-        {currentPage === "history" &&
-          (isLoggedIn ? (
-            <History />
-          ) : (
-            <LoginPage onLogin={handleLogin} navigateTo={navigateTo} />
-          ))}
-        {currentPage === "contacts" &&
-          (isLoggedIn ? (
-            <ContactsPage />
-          ) : (
-            <LoginPage onLogin={handleLogin} navigateTo={navigateTo} />
-          ))}
-        {currentPage === "login" && (
-          <LoginPage onLogin={handleLogin} navigateTo={navigateTo} />
-        )}
-        {currentPage === "signup" && (
-          <SignupPage onSignup={handleLogin} navigateTo={navigateTo} />
-        )}
+    <Router>
+      <div className="App">
+        <NavBar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/send-money"
+            element={isLoggedIn ? <SendMoney /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/history"
+            element={isLoggedIn ? <HistoryPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/contacts"
+            element={isLoggedIn ? <ContactsPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/login"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" />
+              ) : (
+                <LoginPage onLogin={handleLogin} />
+              )
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" />
+              ) : (
+                <SignupPage onSignup={handleLogin} />
+              )
+            }
+          />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 }
 

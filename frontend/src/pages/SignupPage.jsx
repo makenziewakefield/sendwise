@@ -1,16 +1,21 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Signup.scss";
 
-const SignupPage = ({ onSignup, navigateTo }) => {
+const SignupPage = ({ onSignup }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Add error state to track errors
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // Clear any previous errors
+
     try {
       const response = await axios.post(
         "http://localhost:8080/api/v1/auth/register",
@@ -24,10 +29,11 @@ const SignupPage = ({ onSignup, navigateTo }) => {
       );
       localStorage.setItem("token", response.data.token);
       onSignup();
-      navigateTo("home");
+      navigate("/");
     } catch (error) {
       console.error("Signup error:", error);
-      alert(error.response?.data?.msg || "Signup failed. Please try again.");
+      // Set error message to display to the user
+      setError(error.response?.data?.msg || "Signup failed. Please try again.");
     }
   };
 
@@ -72,9 +78,17 @@ const SignupPage = ({ onSignup, navigateTo }) => {
         />
         <button type="submit">Sign Up</button>
       </form>
+
+      {/* Error message display */}
+      {error && (
+        <div data-cy="error-message" className="error-message">
+          {error}
+        </div>
+      )}
+
       <p>
         Already have an account?{" "}
-        <span onClick={() => navigateTo("login")} className="link">
+        <span onClick={() => navigate("/login")} className="link">
           Login
         </span>
       </p>

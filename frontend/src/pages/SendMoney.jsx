@@ -8,10 +8,43 @@ const SendMoney = () => {
   const { contacts, addNewContact } = useContacts();
   const [recipient, setRecipient] = useState("");
   const [newContactName, setNewContactName] = useState("");
+  const [newContactDetails, setNewContactDetails] = useState(null); // Store new contact details (first and last name)
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState("Bank");
   const [description, setDescription] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
+  const [error, setError] = useState(""); // For showing error messages
+
+  // Function to verify if the contact exists
+  const verifyNewContact = async () => {
+    try {
+      const response = await axios.get(`/api/users?username=${newContactName}`);
+      if (response.data) {
+        setNewContactDetails(response.data); // Set contact details to display
+        setError(""); // Clear any previous error
+      } else {
+        setNewContactDetails(null);
+        setError("User not found. Please enter a valid username.");
+      }
+    } catch (error) {
+      setNewContactDetails(null);
+      setError("Error fetching user. Please try again.");
+    }
+  };
+
+  // Function to handle adding the new contact after confirmation
+  const confirmAddNewContact = async () => {
+    if (!newContactDetails) return;
+    try {
+      const newContact = await addNewContact(newContactDetails.username);
+      setRecipient(newContact.id); // Set the new contact as recipient
+      setIsAddingContact(false); // Exit add contact mode
+      setNewContactName(""); // Clear input
+      setError(""); // Clear any error
+    } catch (error) {
+      setError("Failed to add contact. Please try again.");
+    }
+  };
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
@@ -23,14 +56,9 @@ const SendMoney = () => {
       return;
     }
 
-    if (isAddingContact) {
-      try {
-        const newContact = await addNewContact(newContactName);
-        setRecipient(newContact.id);
-      } catch (error) {
-        console.error("Error adding new contact:", error);
-        return;
-      }
+    if (isAddingContact && !newContactDetails) {
+      alert("Please confirm the new contact before proceeding.");
+      return;
     }
 
     const data = {
@@ -59,10 +87,10 @@ const SendMoney = () => {
   };
 
   // Call this function when the component mounts
-  React.useEffect(() => {
+  useEffect(() => {
     checkAuthentication();
   }, []);
-  
+
   return (
     <div className="send-money-container">
       <h2>Send Money</h2>
@@ -71,14 +99,32 @@ const SendMoney = () => {
           <div className="input-field">
             <label htmlFor="recipient">Recipient</label>
             {isAddingContact ? (
-              <input
-                type="text"
-                id="new-contact"
-                value={newContactName}
-                onChange={(e) => setNewContactName(e.target.value)}
-                placeholder="Enter new contact name"
-                required
-              />
+              <>
+                <input
+                  type="text"
+                  id="new-contact"
+                  value={newContactName}
+                  onChange={(e) => setNewContactName(e.target.value)}
+                  placeholder="Enter new contact username"
+                  required
+                />
+                <button type="button" onClick={verifyNewContact}>
+                  Verify Contact
+                </button>
+                {newContactDetails && (
+                  <div className="confirmation">
+                    <p>Is this the contact you want to add?</p>
+                    <p>
+                      {newContactDetails.first_name}{" "}
+                      {newContactDetails.last_name}
+                    </p>
+                    <button type="button" onClick={confirmAddNewContact}>
+                      Confirm and Add
+                    </button>
+                  </div>
+                )}
+                {error && <div className="error-message">{error}</div>}
+              </>
             ) : (
               <select
                 id="recipient"

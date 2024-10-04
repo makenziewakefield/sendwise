@@ -1,30 +1,39 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../styles/Login.scss";
 
-const LoginPage = ({ onLogin, navigateTo }) => {
+const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Add this line
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post(
-      "http://localhost:8080/api/v1/auth/login",
-      { email, password }
-    );
-    const token = response.data.token;
-    console.log('Received token:', token);
-    console.log('Decoded token:', jwtDecode(token));
-    localStorage.setItem("token", token);
-    onLogin();
-    navigateTo("home");
-  } catch (error) {
-    console.error("Login error:", error);
-    alert(error.response?.data?.msg || "Login failed. Please try again.");
-  }
-};
+    e.preventDefault();
+    setError(""); // Clear any previous errors
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/auth/login",
+        { email, password }
+      );
+      const token = response.data.token;
+
+      if (token && token.split(".").length === 3) {
+        console.log("Received token:", token);
+        console.log("Decoded token:", jwtDecode(token));
+        localStorage.setItem("token", token);
+        onLogin();
+        navigate("/");
+      } else {
+        throw new Error("Invalid token format");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError(error.response?.data?.msg || "Invalid credentials");
+    }
+  };
 
   return (
     <div className="login-container">
@@ -46,9 +55,14 @@ const LoginPage = ({ onLogin, navigateTo }) => {
         />
         <button type="submit">Login</button>
       </form>
+      {error && (
+        <div data-cy="error-message" className="error-message">
+          {error}
+        </div>
+      )}{" "}
       <p>
         Don't have an account?{" "}
-        <span onClick={() => navigateTo("signup")} className="link">
+        <span onClick={() => navigate("/signup")} className="link">
           Sign up
         </span>
       </p>

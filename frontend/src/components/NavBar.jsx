@@ -1,22 +1,25 @@
+// /frontend/src/components/NavBar.jsx
+
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import "../styles/NavBar.scss";
 
-const NavBar = ({ navigateTo, isLoggedIn, handleLogout }) => {
+const NavBar = ({ isLoggedIn, handleLogout }) => {
   return (
     <nav>
       <div className="nav-buttons">
-        <button className="nav-home-button" onClick={() => navigateTo("home")}>
+        <Link to="/" className="nav-home-button">
           SendWise
-        </button>
+        </Link>
         <div>
-          <button onClick={() => navigateTo("send-money")}>Send Money</button>
-          <button onClick={() => navigateTo("history")}>History</button>
-          <button onClick={() => navigateTo("contacts")}>Contacts</button>
+          <Link to="/send-money">Send Money</Link>
+          <Link to="/history">History</Link>
+          <Link to="/contacts">Contacts</Link>
           {isLoggedIn ? (
             <button onClick={handleLogout}>Logout</button>
           ) : (
-            <button onClick={() => navigateTo("login")}>Login/Signup</button>
+            <Link to="/login">Login/Signup</Link>
           )}
         </div>
       </div>
@@ -25,7 +28,6 @@ const NavBar = ({ navigateTo, isLoggedIn, handleLogout }) => {
 };
 
 NavBar.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
   handleLogout: PropTypes.func.isRequired,
 };
