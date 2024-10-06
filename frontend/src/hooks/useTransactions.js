@@ -94,7 +94,7 @@ const useTransactions = () => {
         filtered,
         amountFilter,
         amountFilter === "Custom" ? customAmountRange : null
-      )
+      );
     }
 
     setFilteredTransactions(filtered);
@@ -147,7 +147,7 @@ const useTransactions = () => {
     setCustomAmountRange,
     setTransactions,
     fetchTransactions,
-    setError
+    setError,
   };
 };
 
