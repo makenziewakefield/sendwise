@@ -1,68 +1,78 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 const useContacts = () => {
   const [contacts, setContacts] = useState([]);
 
-  // Function to fetch contacts
+  // Fetch contacts from an API
   const fetchContacts = async () => {
     try {
-      const response = await fetch('/api/v1/contacts');
+      const response = await fetch('http://localhost:3000/api/v1/contacts');
       const data = await response.json();
       setContacts(data);
     } catch (error) {
-      console.error("Error fetching contacts:", error);
+      console.error('Error fetching contacts:', error);
     }
   };
 
-  // Function to update a contact
-  const updateContact = async (id, updatedContact) => {
+
+  // Add a new contact to the list
+  const addContact = (newContact) => {
+    setContacts([...contacts, newContact]);
+  };
+
+
+  // Update existing contact
+  const updateContact = async (contactId, updatedContact) => {
     try {
-      const response = await fetch(`/api/v1/contacts/${id}`, {
-        method: "PUT",
+      const response = await fetch(`http://localhost:3000/api/v1/contacts/${contactId}`, {
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(updatedContact),
       });
-
+  
       if (response.ok) {
-        const updatedContacts = contacts.map(contact =>
-          contact.id === id ? updatedContact : contact
+        const updatedContactData = await response.json();
+        setContacts(prevContacts =>
+          prevContacts.map(contact =>
+            contact.id === contactId ? updatedContactData : contact
+          )
         );
-        setContacts(updatedContacts);
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to update contact:', errorData);
       }
     } catch (error) {
-      console.error("Error updating contact:", error);
+      console.error('Error updating contact:', error);
     }
   };
+ 
 
-  // Function to delete a contact
-  const deleteContact = async (id) => {
+  // Delete contact
+  const deleteContact = async (contactId) => {
     try {
-      const response = await fetch(`/api/v1/contacts/${id}`, {
-        method: "DELETE",
+      const response = await fetch(`http://localhost:3000/api/v1/contacts/${contactId}`, {
+        method: 'DELETE',
       });
 
       if (response.ok) {
-        const filteredContacts = contacts.filter(contact => contact.id !== id);
-        setContacts(filteredContacts);
+        setContacts(prevContacts =>
+          prevContacts.filter(contact => contact.id !== contactId)
+        );
+      } else {
+        console.error('Failed to delete contact');
       }
     } catch (error) {
-      console.error("Error deleting contact:", error);
+      console.error('Error deleting contact:', error);
     }
   };
 
-  // Fetch contacts on initial render
   useEffect(() => {
     fetchContacts();
   }, []);
 
-  return {
-    contacts,
-    fetchContacts,
-    updateContact,
-    deleteContact,
-  };
-};
+  return { contacts, fetchContacts, addContact, updateContact, deleteContact };
+}
 
 export default useContacts;
