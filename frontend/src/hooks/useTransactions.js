@@ -9,6 +9,7 @@ import { getUserIdFromToken } from "../utils/tokenUtils";
 
 const useTransactions = () => {
   const [transactions, setTransactions] = useState([]);
+  const [allTransactions, setAllTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [dateFilter, setDateFilter] = useState("Last 15 days");
   const [amountFilter, setAmountFilter] = useState("Amount range");
@@ -29,7 +30,7 @@ const useTransactions = () => {
   // Fetch transactions from backend
   const fetchTransactions = async () => {
     try {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -48,17 +49,17 @@ const useTransactions = () => {
 
       console.log("API response:", response.data);
 
-      // Ensure we have transactions in the response
       if (!response.data || !Array.isArray(response.data)) {
         throw new Error("No transactions found in the API response");
       }
 
-      setTransactions(response.data); // Set transactions
+      setAllTransactions(response.data);
+      setTransactions(response.data);
     } catch (err) {
       console.error("Error fetching transactions:", err);
       setError(err.message || "An error occurred while fetching transactions");
     } finally {
-      setIsLoading(false); // Stop loading in both success and error cases
+      setIsLoading(false);
     }
   };
 
@@ -78,10 +79,9 @@ const useTransactions = () => {
   ]);
 
   const applyFilters = () => {
-    let filtered = Array.isArray(transactions) ? [...transactions] : [];
+    let filtered = [...transactions];
     console.log("Transactions before filtering:", filtered);
 
-    // Filter by date (predefined range or custom date)
     if (filtered.length > 0) {
       if (fromDate && toDate) {
         filtered = filterTransactionsByCustomDate(filtered, fromDate, toDate);
@@ -89,7 +89,6 @@ const useTransactions = () => {
         filtered = filterTransactionsByDate(filtered, dateFilter);
       }
 
-      // Filter by amount
       filtered = filterTransactionsByAmount(
         filtered,
         amountFilter,
@@ -128,6 +127,7 @@ const useTransactions = () => {
 
   return {
     transactions: filteredTransactions,
+    allTransactions,
     dateFilter,
     amountFilter,
     searchTerm,

@@ -34,9 +34,6 @@ const TransactionTable = ({ transactions, sortConfig, requestSort }) => {
             Amount Out{" "}
             {getClassNamesFor("amount_out") === "ascending" ? "▲" : "▼"}
           </th>
-          <th onClick={() => requestSort("balance")}>
-            Balance {getClassNamesFor("balance") === "ascending" ? "▲" : "▼"}
-          </th>
         </tr>
       </thead>
       <tbody>
@@ -46,8 +43,7 @@ const TransactionTable = ({ transactions, sortConfig, requestSort }) => {
             <td>{transaction.description}</td>
             <td>{transaction.category}</td>
             <td>{formatCurrency(transaction.amount_in)}</td>
-            <td>{formatCurrency(transaction.amount_out)}</td>
-            <td>{formatCurrency(transaction.balance)}</td>
+            <td>{formatCurrency(-transaction.amount_out)}</td>
           </tr>
         ))}
       </tbody>
