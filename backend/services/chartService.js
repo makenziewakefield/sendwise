@@ -99,7 +99,7 @@ async function getSpendingOverTime(userId, interval) {
     GROUP BY date
     ORDER BY date ASC
   `, [userId]);
-
+    console.log(result.rows);
   return result.rows;  // [{ date: '2024-01-01', total_spent: 150 }, ...]
 }
 
