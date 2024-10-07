@@ -14,9 +14,11 @@ import SignupPage from "./pages/SignupPage";
 import NavBar from "./components/NavBar";
 import "./styles/App.scss";
 import axios from "axios";
+import AnalyticsPage from "./pages/AnalyticsPage";
+
 
 axios.defaults.withCredentials = true;
-import AnalyticsPage from "./pages/AnalyticsPage";
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -56,6 +58,10 @@ function App() {
             element={isLoggedIn ? <ContactsPage /> : <Navigate to="/login" />}
           />
           <Route
+            path="/analytics"
+            element={isLoggedIn ? <AnalyticsPage /> : <Navigate to="/login" />}
+          />
+          <Route
             path="/login"
             element={
               isLoggedIn ? (
@@ -76,7 +82,6 @@ function App() {
             }
           />
         </Routes>
-        {currentPage === 'analytics' && <AnalyticsPage />}
       </div>
     </Router>
   );
