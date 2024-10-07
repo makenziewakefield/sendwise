@@ -63,16 +63,10 @@ app.use("/api/v1/history", historyRoutes); // For testing without auth
 app.use('/api/v1/contacts', contactsApiRoutes) // For testing without auth
 
 // Budget, contacts, transfers, and transactions routes
-<<<<<<< HEAD
-app.use("/api/v1/budget", authMiddleware, budgetApiRoutes);
-app.use("/api/v1/transfers", authMiddleware, transfersApiRoutes);
-app.use("/api/v1/transactions", authMiddleware, transactionsApiRoutes);
-=======
 app.use("/api/v1/budget", budgetApiRoutes);
 app.use("/api/v1/contacts", contactsApiRoutes);
 app.use("/api/v1/transfers", transfersApiRoutes);
 app.use("/api/v1/transactions", transactionsApiRoutes);
->>>>>>> feature/history-page
 
 // Serve the React app
 app.get("/", (req, res) => {
