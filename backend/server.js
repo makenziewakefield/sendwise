@@ -35,6 +35,7 @@ const contactsApiRoutes = require("./routes/contacts");
 const transfersApiRoutes = require("./routes/transfers");
 const transactionsApiRoutes = require("./routes/transactions");
 const historyRoutes = require("./routes/history");
+const analyticsRoutes = require("./routes/analytics"); 
 
 // Mount routes
 
@@ -58,6 +59,9 @@ app.use("/api/v1/budget", budgetApiRoutes);
 app.use("/api/v1/contacts", contactsApiRoutes);
 app.use("/api/v1/transfers", transfersApiRoutes);
 app.use("/api/v1/transactions", transactionsApiRoutes);
+
+// Analytics route
+app.use("/api/v1/analytics", analyticsRoutes); 
 
 // Serve the React app
 app.get("/", (req, res) => {

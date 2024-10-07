@@ -16,6 +16,7 @@ import "./styles/App.scss";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
+import AnalyticsPage from "./pages/AnalyticsPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -75,6 +76,7 @@ function App() {
             }
           />
         </Routes>
+        {currentPage === 'analytics' && <AnalyticsPage />}
       </div>
     </Router>
   );
