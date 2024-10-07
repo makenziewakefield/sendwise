@@ -14,6 +14,7 @@ const NavBar = ({ isLoggedIn, handleLogout }) => {
           <Link to="/send-money">Send Money</Link>
           <Link to="/history">History</Link>
           <Link to="/contacts">Contacts</Link>
+          <Link to="/analytics">Analytics</Link>
           {isLoggedIn ? (
             <button onClick={handleLogout}>Logout</button>
           ) : (

@@ -1,0 +1,25 @@
+.analytics-page {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);  // 2 columns
+    grid-template-rows: auto;               // auto adjust the height of each row
+    gap: 20px;                              // spacing between the grid items
+    padding: 20px;
+  
+    h1 {
+      grid-column: span 2;                  // make the title span across both columns
+      text-align: center;
+    }
+  
+    .chart-container {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: #f1efef;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  
+    img {
+      width: 100%;                          // make sure the charts take up full width of the container
+      height: auto;
+    }
+  }
