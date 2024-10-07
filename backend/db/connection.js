@@ -1,4 +1,3 @@
-// db/connection.js
 const { Pool } = require("pg");
 
 const dbParams = {
@@ -15,4 +14,4 @@ db.connect()
   .then(() => console.log("Database connected successfully"))
   .catch((err) => console.error("Database connection error:", err));
 
-module.exports = db; // Export the db instance
+module.exports = db;

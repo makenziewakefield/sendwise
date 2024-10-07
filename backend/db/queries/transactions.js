@@ -1,4 +1,3 @@
-// db/queries/transactions.js
 const db = require("../connection");
 
 // Function to get all transactions

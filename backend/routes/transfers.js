@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/connection"); // Import the db instance
+const db = require("../db/connection");
 const {
   getAllTransfers,
   getTransfersByUserId,
@@ -14,7 +14,7 @@ const { updateUserBalance } = require("../db/queries/users");
 // Admin route: Get all transfer histories (for admins)
 router.get("/history", async (req, res) => {
   try {
-    const allTransfers = await getAllTransfers(); // Fetch all transfers
+    const allTransfers = await getAllTransfers();
     res.status(200).json(allTransfers);
   } catch (error) {
     console.error("Error fetching all transfer history:", error);

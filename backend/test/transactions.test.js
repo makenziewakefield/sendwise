@@ -6,7 +6,7 @@ const { exec } = require("child_process");
 
 describe("Transaction API Tests", () => {
   beforeEach(function (done) {
-    this.timeout(10000); // Increase timeout to 10 seconds
+    this.timeout(10000);
     exec("npm run db:reset", (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
@@ -88,7 +88,7 @@ describe("Transaction API Tests", () => {
           expect(transaction.amount_out).to.equal("0.00");
           expect(transaction.description).to.equal("Salary");
 
-          // Optionally, you can check the updated balance as well
+          // Check the updated balance
           expect(res.body.updatedBalance).to.be.a("number");
 
           done();
@@ -120,7 +120,7 @@ describe("Transaction API Tests", () => {
           expect(transaction.amount_out).to.equal("50.00");
           expect(transaction.description).to.equal("Dinner at restaurant");
 
-          // Optionally, you can check the updated balance as well
+          // Check the updated balance
           expect(res.body.updatedBalance).to.be.a("number");
 
           done();
@@ -137,10 +137,10 @@ describe("Transaction API Tests", () => {
         .post("/api/v1/transactions")
         .send({
           userId: 1,
-          amount: 100.0, // The amount of the expense
-          category: 2, // Assuming category 2 is for 'Groceries' or another expense type
+          amount: 100.0,
+          category: 2,
           description: "Grocery shopping",
-          isIncoming: false, // This indicates that the transaction is an outgoing expense
+          isIncoming: false,
         })
         .expect(201);
 
@@ -217,7 +217,7 @@ describe("Transaction API Tests", () => {
   describe("GET /api/v1/transactions/user/:userId", () => {
     it("should retrieve all transactions for a specific user", (done) => {
       request(app)
-        .get("/api/v1/transactions/user/1") // Assuming user with ID 1 exists
+        .get("/api/v1/transactions/user/1")
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
@@ -243,7 +243,7 @@ describe("Transaction API Tests", () => {
   describe("GET /api/v1/transactions/:id", () => {
     it("should retrieve a transaction by ID", (done) => {
       request(app)
-        .get("/api/v1/transactions/1") // Adjust the ID according to your DB state
+        .get("/api/v1/transactions/1")
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
@@ -265,9 +265,9 @@ describe("Transaction API Tests", () => {
         .end((err, res) => {
           if (err) return done(err);
 
-          expect(res.body).to.have.property("message"); // Check for the message property
-          expect(res.body.message).to.equal("Transaction deleted successfully"); // Check the message
-          expect(res.body).to.have.property("transaction"); // Check for deleted transaction
+          expect(res.body).to.have.property("message");
+          expect(res.body.message).to.equal("Transaction deleted successfully");
+          expect(res.body).to.have.property("transaction");
           done();
         });
     });
@@ -276,7 +276,7 @@ describe("Transaction API Tests", () => {
   describe("GET /api/v1/transactions/:id", () => {
     it("should return 404 for a non-existent transaction", (done) => {
       request(app)
-        .get("/api/v1/transactions/999999") // Assuming this ID does not exist
+        .get("/api/v1/transactions/999999")
         .expect(404)
         .end((err, res) => {
           if (err) return done(err);

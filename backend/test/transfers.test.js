@@ -1,12 +1,12 @@
 const request = require("supertest");
 const chai = require("chai");
 const expect = chai.expect;
-const app = require("../server"); // Adjust the path to your server file
+const app = require("../server");
 const { exec } = require("child_process");
 
 describe("Transfer API Tests", () => {
   before(function (done) {
-    this.timeout(10000); // Increase timeout to 10 seconds
+    this.timeout(10000);
     exec("npm run db:reset", (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
@@ -27,7 +27,7 @@ describe("Transfer API Tests", () => {
           if (err) return done(err);
 
           expect(res.body).to.be.an("array");
-          expect(res.body.length).to.be.at.least(1); // Adjust based on your seed data
+          expect(res.body.length).to.be.at.least(1);
 
           const transfer = res.body[0];
           expect(transfer).to.have.property("id");
@@ -46,13 +46,13 @@ describe("Transfer API Tests", () => {
   describe("GET /api/v1/transfers/:userId", () => {
     it("should retrieve all transfers for a specific user", (done) => {
       request(app)
-        .get("/api/v1/transfers/1") // Assuming user with ID 1 exists
+        .get("/api/v1/transfers/1")
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
 
           expect(res.body).to.be.an("array");
-          expect(res.body.length).to.be.at.least(1); // Adjust based on your seed data
+          expect(res.body.length).to.be.at.least(1);
 
           const transfer = res.body[0];
           expect(transfer).to.have.property("id");
@@ -191,28 +191,28 @@ describe("Transfer API Tests", () => {
 
   describe("DELETE /api/v1/transfers/:id", () => {
     it("should delete a transfer by ID", (done) => {
-      const transferIdToDelete = 1; // Use a valid transfer ID for the test
+      const transferIdToDelete = 1;
       request(app)
         .delete(`/api/v1/transfers/${transferIdToDelete}`)
         .expect(200)
         .end((err, res) => {
           if (err) return done(err);
 
-          expect(res.body).to.have.property("message"); // Check for the message property
-          expect(res.body.message).to.equal("Transfer deleted successfully"); // Check the message
-          expect(res.body).to.have.property("transfer"); // Check for deleted transfer
+          expect(res.body).to.have.property("message");
+          expect(res.body.message).to.equal("Transfer deleted successfully");
+          expect(res.body).to.have.property("transfer");
           done();
         });
     });
 
     it("should return 404 for non-existent transfer", (done) => {
       request(app)
-        .delete("/api/v1/transfers/9999999") // Assuming this ID does not exist
+        .delete("/api/v1/transfers/9999999")
         .expect(404)
         .end((err, res) => {
           if (err) return done(err);
-          expect(res.body).to.have.property("error"); // Check for the error property
-          expect(res.body.error).to.equal("Transfer not found"); // Check the error message
+          expect(res.body).to.have.property("error");
+          expect(res.body.error).to.equal("Transfer not found");
           done();
         });
     });
