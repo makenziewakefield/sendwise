@@ -3,10 +3,9 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/History.scss";
 import useTransactions from "../hooks/useTransactions";
+import useCalculateBalance from "../hooks/useCalculateBalance"; // Import the custom hook
 import { filterTransactionsBySearch } from "../utils/filterUtils";
 import TransactionTable from "../components/TransactionTable";
-import axios from "axios";
-import { getUserIdFromToken } from "../utils/tokenUtils";
 
 const HistoryPage = () => {
   const {
@@ -37,20 +36,8 @@ const HistoryPage = () => {
   const [showAmountOptions, setShowAmountOptions] = useState(false);
   const [showFromCalendar, setShowFromCalendar] = useState(false);
   const [showToCalendar, setShowToCalendar] = useState(false);
-  const [balance, setBalance] = useState(0);
 
-  // Calculate the balance from transactions
-  const calculateBalance = () => {
-    let totalIn = 0;
-    let totalOut = 0;
-
-    allTransactions.forEach((transaction) => {
-      totalIn += parseFloat(transaction.amount_in || 0);
-      totalOut += parseFloat(transaction.amount_out || 0);
-    });
-
-    return balance + totalIn - totalOut;
-  };
+  const currentBalance = useCalculateBalance(allTransactions); // Calculate balance using the custom hook
 
   const handleCustomDateSearchWrapper = () => {
     handleCustomDateSearch();
@@ -100,22 +87,6 @@ const HistoryPage = () => {
     }
   };
 
-  const fetchBalance = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const userId = getUserIdFromToken(token);
-
-      const response = await axios.get(`/api/v1/users/${userId}/balance`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setBalance(response.data.balance);
-    } catch (error) {
-      console.error("Error fetching balance:", error);
-      setError(error.message);
-    }
-  };
-
   useEffect(() => {
     const fetchAndSetTransactions = async () => {
       try {
@@ -127,13 +98,10 @@ const HistoryPage = () => {
     };
 
     fetchAndSetTransactions();
-    fetchBalance();
   }, []);
 
   if (isLoading) return <div className="loading">Loading transactions...</div>;
   if (error) return <div className="error">Error: {error}</div>;
-
-  const currentBalance = calculateBalance();
 
   return (
     <div className="history-page">
