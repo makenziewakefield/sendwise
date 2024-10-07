@@ -1,5 +1,3 @@
-// /frontend/src/components/NavBar.jsx
-
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";

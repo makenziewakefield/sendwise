@@ -9,12 +9,12 @@ const SignupPage = ({ onSignup }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Add error state to track errors
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear any previous errors
+    setError("");
 
     try {
       const response = await axios.post(
@@ -32,7 +32,6 @@ const SignupPage = ({ onSignup }) => {
       navigate("/");
     } catch (error) {
       console.error("Signup error:", error);
-      // Set error message to display to the user
       setError(error.response?.data?.msg || "Signup failed. Please try again.");
     }
   };

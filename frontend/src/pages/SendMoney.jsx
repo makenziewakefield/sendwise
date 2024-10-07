@@ -8,20 +8,20 @@ const SendMoney = () => {
   const { contacts, addNewContact } = useContacts();
   const [recipient, setRecipient] = useState("");
   const [newContactName, setNewContactName] = useState("");
-  const [newContactDetails, setNewContactDetails] = useState(null); // Store new contact details (first and last name)
+  const [newContactDetails, setNewContactDetails] = useState(null);
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState("Bank");
   const [description, setDescription] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
-  const [error, setError] = useState(""); // For showing error messages
+  const [error, setError] = useState("");
 
   // Function to verify if the contact exists
   const verifyNewContact = async () => {
     try {
       const response = await axios.get(`/api/users?username=${newContactName}`);
       if (response.data) {
-        setNewContactDetails(response.data); // Set contact details to display
-        setError(""); // Clear any previous error
+        setNewContactDetails(response.data);
+        setError("");
       } else {
         setNewContactDetails(null);
         setError("User not found. Please enter a valid username.");
@@ -37,10 +37,10 @@ const SendMoney = () => {
     if (!newContactDetails) return;
     try {
       const newContact = await addNewContact(newContactDetails.username);
-      setRecipient(newContact.id); // Set the new contact as recipient
-      setIsAddingContact(false); // Exit add contact mode
-      setNewContactName(""); // Clear input
-      setError(""); // Clear any error
+      setRecipient(newContact.id);
+      setIsAddingContact(false);
+      setNewContactName("");
+      setError("");
     } catch (error) {
       setError("Failed to add contact. Please try again.");
     }
@@ -62,7 +62,7 @@ const SendMoney = () => {
     }
 
     const data = {
-      senderId: 1, // You might want to get this from the token or user context
+      senderId: 1,
       recipientId: recipient,
       amount,
       method,
@@ -81,7 +81,6 @@ const SendMoney = () => {
   const checkAuthentication = () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      // Redirect to login page
       window.location.href = "/login";
     }
   };

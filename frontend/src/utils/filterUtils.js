@@ -30,7 +30,7 @@ export const filterTransactionsByAmount = (transactions, amountFilter, customAmo
       return transactions.filter(
         (t) => t.amount_in > 1000 || t.amount_out > 1000
       );
-    case "Custom":  // Handle custom range
+    case "Custom":
       return transactions.filter(
         (t) =>
           (t.amount_in >= fromAmount && t.amount_in <= toAmount) ||
