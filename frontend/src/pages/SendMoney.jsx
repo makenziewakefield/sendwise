@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "../styles/SendMoney.scss";
 import useContacts from "../hooks/useContacts";
 import axios from "axios";
-import { isAuthenticated } from "../utils/auth";
 
 const SendMoney = () => {
   const { contacts, addNewContact } = useContacts();
