@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const useContacts = (userId) => {
   const [contacts, setContacts] = useState([]);
 
-  // Fetch contacts for a specific user
-  const fetchContacts = async (userId) => {
+  // Function to fetch contacts for a specific user
+  const fetchContacts = useCallback(async (userId) => {
     if (!userId) {
       console.error("User ID is missing");
       return;
@@ -21,14 +21,12 @@ const useContacts = (userId) => {
     } catch (error) {
       console.error("Error fetching contacts:", error);
     }
-  };  
-
+  }, []);
 
   // Add a new contact to the list
   const addContact = (newContact) => {
     setContacts([...contacts, newContact]);
   };
-
 
   // Update existing contact
   const updateContact = async (contactId, updatedContact) => {
@@ -56,7 +54,6 @@ const useContacts = (userId) => {
       console.error('Error updating contact:', error);
     }
   };
- 
 
   // Delete contact
   const deleteContact = async (contactId) => {
@@ -77,11 +74,12 @@ const useContacts = (userId) => {
     }
   };
 
+  // Effect to fetch contacts when userId changes
   useEffect(() => {
     if (userId) {
       fetchContacts(userId);
     }
-  }, [userId]);
+  }, [userId, fetchContacts]);
 
   return { contacts, fetchContacts, addContact, updateContact, deleteContact };
 }
