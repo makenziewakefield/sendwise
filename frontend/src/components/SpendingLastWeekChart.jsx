@@ -3,7 +3,7 @@ import useFetchChart from '../hooks/useFetchChart';
 
 const SpendingLastWeekChart = ({ userId }) => {
   const { chartUrl, loading, error } = useFetchChart(
-    `/api/v1/analytics/spending-last-week-chart?user_id=${userId}`, // Append the user_id in the URL query
+    `/api/v1/analytics/spending-last-week-chart?user_id=${userId}`, 
     'line', 
     [], 
     [] 

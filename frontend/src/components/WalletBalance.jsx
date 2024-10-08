@@ -17,11 +17,11 @@ const WalletBalance = ({ userId }) => {
 
         const data = await response.json();
         setBalance(data.balance);
-        setLoading(false);  // Stop loading once the balance is fetched
+        setLoading(false);  
       } catch (err) {
         console.error(err);
-        setError(err.message);  // Display the error in case of failure
-        setLoading(false);  // Stop loading in case of error
+        setError(err.message);  
+        setLoading(false); 
       }
     };
 

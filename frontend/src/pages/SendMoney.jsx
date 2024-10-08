@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/SendMoney.scss";
 import useContacts from "../hooks/useContacts";
+import { getUserIdFromToken } from "../utils/tokenUtils";
 import axios from "axios";
 
 const SendMoney = () => {
@@ -13,6 +14,15 @@ const SendMoney = () => {
   const [description, setDescription] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [error, setError] = useState("");
+
+  const [transactionCategory, setTransactionCategory] = useState("");
+  const [transactionAmountIn, setTransactionAmountIn] = useState(0);
+  const [transactionAmountOut, setTransactionAmountOut] = useState(0);
+  const [transactionDescription, setTransactionDescription] = useState("");
+  const [transactionDate, setTransactionDate] = useState("");
+
+  const token = localStorage.getItem("token");
+  const userId = getUserIdFromToken(token);
 
   // Function to verify if the contact exists
   const verifyNewContact = async () => {
@@ -74,6 +84,33 @@ const SendMoney = () => {
     } catch (error) {
       console.error("Error sending money:", error);
       alert("Failed to send money. Please try again.");
+    }
+  };
+
+  const handleTransactionSubmit = async (e) => {
+    e.preventDefault();
+  
+    const transactionData = {
+      userId: userId, 
+      category: transactionCategory,
+      amount_in: transactionAmountIn,
+      amount_out: transactionAmountOut,
+      description: transactionDescription,
+      date: transactionDate,
+    };
+  
+    try {
+      await axios.post("/api/v1/transactions", transactionData);
+      alert("Transaction logged successfully!");
+  
+      setTransactionCategory("");
+      setTransactionAmountIn(0);
+      setTransactionAmountOut(0);
+      setTransactionDescription("");
+      setTransactionDate("");
+    } catch (error) {
+      console.error("Error logging transaction:", error);
+      alert("Failed to log transaction. Please try again.");
     }
   };
 
@@ -192,6 +229,74 @@ const SendMoney = () => {
           </button>
           <button type="submit" className="send-btn">
             Send
+          </button>
+        </div>
+      </form>
+
+      <h2>Log a Transaction</h2>
+      <form onSubmit={handleTransactionSubmit}>
+        <div className="row">
+          <div className="input-field">
+            <label htmlFor="transaction-category">Category</label>
+            <input
+              type="text"
+              id="transaction-category"
+              value={transactionCategory}
+              onChange={(e) => setTransactionCategory(e.target.value)}
+              placeholder="Enter transaction category"
+              required
+            />
+          </div>
+
+          <div className="input-field">
+            <label htmlFor="transaction-amount-in">Amount In</label>
+            <input
+              type="number"
+              id="transaction-amount-in"
+              value={transactionAmountIn}
+              onChange={(e) => setTransactionAmountIn(e.target.value)}
+              placeholder="Enter amount in"
+            />
+          </div>
+
+          <div className="input-field">
+            <label htmlFor="transaction-amount-out">Amount Out</label>
+            <input
+              type="number"
+              id="transaction-amount-out"
+              value={transactionAmountOut}
+              onChange={(e) => setTransactionAmountOut(e.target.value)}
+              placeholder="Enter amount out"
+            />
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="input-field">
+            <label htmlFor="transaction-description">Description</label>
+            <textarea
+              id="transaction-description"
+              value={transactionDescription}
+              onChange={(e) => setTransactionDescription(e.target.value)}
+              placeholder="Enter transaction description"
+            />
+          </div>
+
+          <div className="input-field">
+            <label htmlFor="transaction-date">Date</label>
+            <input
+              type="date"
+              id="transaction-date"
+              value={transactionDate}
+              onChange={(e) => setTransactionDate(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="row buttons">
+          <button type="submit" className="send-btn">
+            Log Transaction
           </button>
         </div>
       </form>

@@ -1,295 +1,344 @@
 @import './App.scss';
 
-.history-page {
-  h1 {
-    color: $primary-color;
+// .history-page {
+//   h1 {
+//     color: $primary-color;
+//     margin-bottom: 20px;
+//   }
+
+//   .filters {
+//     display: flex;
+//     justify-content: space-between;
+//     margin-bottom: 20px;
+//     flex-wrap: wrap;
+
+//     .date-filter, .amount-filter, .search-container {
+//       margin-bottom: 10px;
+//       margin-top: 0px;
+
+//     }
+
+//     button {
+//       background-color: $primary-color;
+//       color: white;
+//       border: none;
+//       padding: 10px 15px;
+//       cursor: pointer;
+//       transition: background-color 0.3s;
+
+//       &:hover {
+//         background-color: darken($primary-color, 10%);
+//       }
+//     }
+
+//     .date-filter {
+//       position: relative;
+
+//       .date-options {
+//         position: absolute;
+//         top: 100%;
+//         left: 0;
+//         background-color: white;
+//         border: 1px solid #ccc;
+//         padding: 10px;
+//         z-index: 1000;
+//         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+//         button {
+//           display: block;
+//           width: 100%;
+//           text-align: left;
+//           margin-bottom: 5px;
+//           background-color: transparent;
+//           color: $text-color;
+//           padding: 5px 10px;
+
+//           &:hover {
+//             background-color: lighten($primary-color, 35%);
+//           }
+//         }
+
+//         .custom-date-range {
+//           margin-top: 10px;
+
+//           label {
+//             display: block;
+//             margin-bottom: 5px;
+//           }
+
+//           input {
+//             margin-bottom: 5px;
+//             padding: 5px;
+//             width: 100%;
+//           }
+
+//           button {
+//             width: 100%;
+//             background-color: $primary-color;
+//             color: white;
+//             margin-top: 5px;
+//           }
+//         }
+//       }
+//     }
+
+//     .amount-filter {
+//       position: relative;
+
+//       .amount-options {
+//         position: absolute;
+//         top: 100%;
+//         left: 0;
+//         background-color: white;
+//         border: 1px solid #ccc;
+//         padding: 10px;
+//         z-index: 1000;
+//         min-width: 250px;
+
+//         .amount-inputs {
+//           display: flex;
+//           flex-wrap: wrap;
+//           gap: 10px;
+//           margin-bottom: 10px;
+
+//           .amount-input {
+//             flex: 1 1 45%;
+//             min-width: 120px;
+
+//             label {
+//               display: block;
+//               margin-bottom: 5px;
+//             }
+
+//             .input-wrapper {
+//               position: relative;
+
+//               .dollar-sign {
+//                 position: absolute;
+//                 left: 5px;
+//                 top: 50%;
+//                 transform: translateY(-50%);
+//               }
+
+//               input {
+//                 width: 100%;
+//                 padding: 5px 5px 5px 20px;
+//                 border: 1px solid #ccc;
+//               }
+//             }
+
+//             .error {
+//               color: red;
+//               font-size: 0.8em;
+//             }
+//           }
+//         }
+
+//         .amount-buttons {
+//           display: flex;
+//           justify-content: space-between;
+
+//           button {
+//             flex: 1;
+//             margin: 0 5px;
+//           }
+//         }
+//       }
+//     }
+
+//     .search-container {
+//       position: relative;
+
+//       input[type="text"] {
+//         padding: 10px;
+//         width: 200px;
+//         border: 1px solid #ddd;
+//       }
+
+//       .clear-search {
+//         position: absolute;
+//         right: 10px;
+//         top: 50%;
+//         transform: translateY(-50%);
+//         background: none;
+//         border: none;
+//         color: #999;
+//         cursor: pointer;
+//       }
+//     }
+//   }
+
+//   table {
+//     width: 100%;
+//     border-collapse: collapse;
+//     margin-top: 20px;
+
+//     th, td {
+//       border: 1px solid #ddd;
+//       padding: 12px;
+//       text-align: left;
+//     }
+
+//     th {
+//       background-color: $primary-color;
+//       color: white;
+//       cursor: pointer;
+
+//       &:hover {
+//         background-color: darken($primary-color, 10%);
+//       }
+//     }
+
+//     tr:nth-child(even) {
+//       background-color: lighten($background-color, 5%);
+//     }
+//   }
+
+//   .no-transactions {
+//     text-align: center;
+//     padding: 20px;
+//     background-color: lighten($background-color, 2%);
+//     border: 1px solid #ddd;
+//     margin-top: 20px;
+//   }
+
+//   .custom-amount-range {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 10px;
+//     padding: 10px;
+
+//     > div {
+//       display: flex;
+//       align-items: center;
+//       gap: 5px;
+
+//       label {
+//         min-width: 40px;
+//       }
+
+//       .dollar-sign {
+//         position: relative;
+//         left: 20px;
+//       }
+
+//       input {
+//         padding-left: 15px;
+//         width: 100px;
+//       }
+
+//       .error {
+//         color: red;
+//         font-size: 0.8em;
+//       }
+//     }
+
+//     .custom-amount-buttons {
+//       display: flex;
+//       justify-content: space-between;
+//       margin-top: 10px;
+
+//       button {
+//         padding: 5px 10px;
+//       }
+//     }
+//   }
+// }
+
+// // Responsive design
+// @media (max-width: 768px) {
+//   .history-page {
+//     .filters {
+//       flex-direction: column;
+
+//       .date-filter, .amount-filter, .search-container {
+//         width: 100%;
+//         margin-bottom: 10px;
+//       }
+
+//       button, input[type="text"] {
+//         width: 100%;
+//       }
+//     }
+
+//     table {
+//       font-size: 14px;
+
+//       th, td {
+//         padding: 8px;
+//       }
+//     }
+//   }
+
+//   .amount-filter .amount-options {
+//     .amount-inputs {
+//       flex-direction: column;
+//     }
+
+//     .amount-buttons {
+//       flex-direction: column;
+      
+//       button {
+//         margin: 5px 0;
+//       }
+//     }
+//   }
+
+//   .custom-amount-range {
+//     flex-direction: column;
+
+//     .custom-fields, .custom-buttons {
+//       flex-direction: column;
+//       align-items: flex-start;
+//     }
+//   }
+// }
+
+
+
+.history-page-container {
+  padding: 20px;
+
+  h2 {
+    text-align: center;
     margin-bottom: 20px;
   }
 
-  .filters {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-
-    .date-filter, .amount-filter, .search-container {
-      margin-bottom: 10px;
-      margin-top: 0px;
-
-    }
-
-    button {
-      background-color: $primary-color;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-
-      &:hover {
-        background-color: darken($primary-color, 10%);
-      }
-    }
-
-    .date-filter {
-      position: relative;
-
-      .date-options {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        z-index: 1000;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-
-        button {
-          display: block;
-          width: 100%;
-          text-align: left;
-          margin-bottom: 5px;
-          background-color: transparent;
-          color: $text-color;
-          padding: 5px 10px;
-
-          &:hover {
-            background-color: lighten($primary-color, 35%);
-          }
-        }
-
-        .custom-date-range {
-          margin-top: 10px;
-
-          label {
-            display: block;
-            margin-bottom: 5px;
-          }
-
-          input {
-            margin-bottom: 5px;
-            padding: 5px;
-            width: 100%;
-          }
-
-          button {
-            width: 100%;
-            background-color: $primary-color;
-            color: white;
-            margin-top: 5px;
-          }
-        }
-      }
-    }
-
-    .amount-filter {
-      position: relative;
-
-      .amount-options {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        z-index: 1000;
-        min-width: 250px;
-
-        .amount-inputs {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          margin-bottom: 10px;
-
-          .amount-input {
-            flex: 1 1 45%;
-            min-width: 120px;
-
-            label {
-              display: block;
-              margin-bottom: 5px;
-            }
-
-            .input-wrapper {
-              position: relative;
-
-              .dollar-sign {
-                position: absolute;
-                left: 5px;
-                top: 50%;
-                transform: translateY(-50%);
-              }
-
-              input {
-                width: 100%;
-                padding: 5px 5px 5px 20px;
-                border: 1px solid #ccc;
-              }
-            }
-
-            .error {
-              color: red;
-              font-size: 0.8em;
-            }
-          }
-        }
-
-        .amount-buttons {
-          display: flex;
-          justify-content: space-between;
-
-          button {
-            flex: 1;
-            margin: 0 5px;
-          }
-        }
-      }
-    }
-
-    .search-container {
-      position: relative;
-
-      input[type="text"] {
-        padding: 10px;
-        width: 200px;
-        border: 1px solid #ddd;
-      }
-
-      .clear-search {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: #999;
-        cursor: pointer;
-      }
-    }
+  .error-message {
+    color: red;
+    text-align: center;
   }
 
-  table {
+  .transaction-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin: 0 auto;
+    max-width: 800px;
 
     th, td {
+      padding: 10px;
       border: 1px solid #ddd;
-      padding: 12px;
       text-align: left;
     }
 
     th {
-      background-color: $primary-color;
-      color: white;
-      cursor: pointer;
-
-      &:hover {
-        background-color: darken($primary-color, 10%);
-      }
+      background-color: #f4f4f4;
     }
 
     tr:nth-child(even) {
-      background-color: lighten($background-color, 5%);
-    }
-  }
-
-  .no-transactions {
-    text-align: center;
-    padding: 20px;
-    background-color: lighten($background-color, 2%);
-    border: 1px solid #ddd;
-    margin-top: 20px;
-  }
-
-  .custom-amount-range {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-
-    > div {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-
-      label {
-        min-width: 40px;
-      }
-
-      .dollar-sign {
-        position: relative;
-        left: 20px;
-      }
-
-      input {
-        padding-left: 15px;
-        width: 100px;
-      }
-
-      .error {
-        color: red;
-        font-size: 0.8em;
-      }
+      background-color: #f9f9f9;
     }
 
-    .custom-amount-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-
-      button {
-        padding: 5px 10px;
-      }
-    }
-  }
-}
-
-// Responsive design
-@media (max-width: 768px) {
-  .history-page {
-    .filters {
-      flex-direction: column;
-
-      .date-filter, .amount-filter, .search-container {
-        width: 100%;
-        margin-bottom: 10px;
-      }
-
-      button, input[type="text"] {
-        width: 100%;
-      }
+    .delete-btn {
+      background-color: red;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
     }
 
-    table {
-      font-size: 14px;
-
-      th, td {
-        padding: 8px;
-      }
-    }
-  }
-
-  .amount-filter .amount-options {
-    .amount-inputs {
-      flex-direction: column;
-    }
-
-    .amount-buttons {
-      flex-direction: column;
-      
-      button {
-        margin: 5px 0;
-      }
-    }
-  }
-
-  .custom-amount-range {
-    flex-direction: column;
-
-    .custom-fields, .custom-buttons {
-      flex-direction: column;
-      align-items: flex-start;
+    .delete-btn:hover {
+      background-color: darkred;
     }
   }
 }

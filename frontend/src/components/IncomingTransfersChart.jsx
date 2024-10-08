@@ -3,7 +3,7 @@ import useFetchChart from '../hooks/useFetchChart';
 
 const IncomingTransfersChart = ({ userId }) => {
   const { chartUrl, loading, error } = useFetchChart(
-    `/api/v1/analytics/incoming-transfers-chart?user_id=${userId}`, // Fetch the chart with the user_id
+    `/api/v1/analytics/incoming-transfers-chart?user_id=${userId}`,
     'bar',
     [], 
     [] 

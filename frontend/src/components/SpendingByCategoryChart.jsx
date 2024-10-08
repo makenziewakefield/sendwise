@@ -3,7 +3,7 @@ import useFetchChart from '../hooks/useFetchChart';
 
 const SpendingByCategoryChart = ({ userId }) => {
   const { chartUrl, loading, error } = useFetchChart(
-    `/api/v1/analytics/spending-by-category-chart?user_id=${userId}`, // Append the user_id in the URL query
+    `/api/v1/analytics/spending-by-category-chart?user_id=${userId}`, 
     'pie', 
     [], 
     [] 
