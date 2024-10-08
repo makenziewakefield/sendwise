@@ -1,10 +1,10 @@
 -- Alice's Transactions (user_id = 1)
 INSERT INTO transactions (user_id, category, amount_in, amount_out, description, date)
 VALUES
-    (1, 'Groceries', 0.00, 150.00, 'Weekly grocery shopping', '2024-10-01'),
-    (1, 'Travel', 0.00, 1300.00, 'Flight tickets for vacation', '2024-10-04'),
-    (1, 'Dining', 0.00, 75.00, 'Dinner with friends', '2024-09-30'),
-    (1, 'Shopping', 0.00, 250.00, 'New clothes and accessories', '2024-09-01'),
+    (1, 'Groceries', 0.00, 150.00, 'Weekly grocery shopping', '2024-10-07'),
+    (1, 'Travel', 0.00, 1300.00, 'Flight tickets for vacation', '2024-10-08'),
+    (1, 'Dining', 0.00, 75.00, 'Dinner with friends', '2024-10-03'),
+    (1, 'Shopping', 0.00, 250.00, 'New clothes and accessories', '2024-30-04'),
     (1, 'Healthcare', 0.00, 100.00, 'Dentist appointment', '2024-09-21'),
     (1, 'Entertainment', 0.00, 250.00, 'Concert tickets', '2024-09-15'),
     (1, 'Utilities', 0.00, 200.00, 'Water and electricity bills', '2024-09-10'),
