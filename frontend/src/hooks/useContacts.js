@@ -1,18 +1,27 @@
 import { useState, useEffect } from 'react';
 
-const useContacts = () => {
+const useContacts = (userId) => {
   const [contacts, setContacts] = useState([]);
 
-  // Fetch contacts from an API
-  const fetchContacts = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/v1/contacts');
-      const data = await response.json();
-      setContacts(data);
-    } catch (error) {
-      console.error('Error fetching contacts:', error);
+  // Fetch contacts for a specific user
+  const fetchContacts = async (userId) => {
+    if (!userId) {
+      console.error("User ID is missing");
+      return;
     }
-  };
+    try {
+      const response = await fetch(`http://localhost:3000/api/v1/contacts/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Fetched contacts:", data);
+        setContacts(data);
+      } else {
+        console.error("Failed to fetch contacts");
+      }
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };  
 
 
   // Add a new contact to the list
@@ -69,8 +78,10 @@ const useContacts = () => {
   };
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    if (userId) {
+      fetchContacts(userId);
+    }
+  }, [userId]);
 
   return { contacts, fetchContacts, addContact, updateContact, deleteContact };
 }

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ContactsTable from "../components/ContactsTable";
 import useContacts from "../hooks/useContacts";
+import { getUserIdFromToken } from "../utils/tokenUtils";
 import "../styles/Contacts.scss";
 
-const ContactsPage = () => {
-  const { contacts, fetchContacts, updateContact, deleteContact } = useContacts();
+const ContactsPage = ({ currentUserId }) => {
+  const { contacts, fetchContacts, updateContact, deleteContact } = useContacts(currentUserId);
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [showEditForm, setShowEditForm] = useState(false);
   const [editingContact, setEditingContact] = useState(null);
   const [showAddContactForm, setShowAddContactForm] = useState(false);
   const [newContact, setNewContact] = useState({
@@ -16,9 +18,14 @@ const ContactsPage = () => {
     contact_nickname: ''
   });
 
+  const token = localStorage.getItem("token");
+  const userId = getUserIdFromToken(token);
+
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    if (userId) {
+      fetchContacts(userId);
+    }
+  }, [userId, fetchContacts]);
 
   const filteredContacts = contacts.filter(contact =>
     contact.contact_name && contact.contact_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -32,10 +39,9 @@ const ContactsPage = () => {
 
 
   // Handle sending money (just a placeholder for now)
-  const handleSendMoney = (contact) => {
-    // Implement additional logic to handle sending money
+  const handleSendMoney = (contactId) => {
+    navigate("/send-money", { state: { recipientId: contactId } });
   };
-
 
   // Handle form submission for adding a contact
   const handleAddContact = async () => {
@@ -51,7 +57,7 @@ const ContactsPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: "1",
+          user_id: userId,
           contact_name: newContact.contact_name,
           contact_email: newContact.contact_email,
           contact_phone: newContact.contact_phone,
@@ -60,9 +66,7 @@ const ContactsPage = () => {
       });
 
       if (response.ok) {
-        const addedContact = await response.json();
-
-        fetchContacts();
+        fetchContacts(userId);
 
         setNewContact({ contact_name: '', contact_email: '', contact_phone: '', contact_nickname: '' });
         setShowAddContactForm(false);
@@ -77,7 +81,7 @@ const ContactsPage = () => {
 
   // Handle editing a contact
   const handleEditContact = (contact) => {
-    setEditingContact(contact); // Set the contact to be edited
+    setEditingContact(contact);
   };
 
 
@@ -104,7 +108,7 @@ const ContactsPage = () => {
     await deleteContact(id);
   };
 
-  
+
   return (
     <div className="contacts-page">
       <div className="page-top-container">

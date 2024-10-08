@@ -16,17 +16,18 @@ import "./styles/App.scss";
 import axios from "axios";
 import AnalyticsPage from "./pages/AnalyticsPage";
 
-
 axios.defaults.withCredentials = true;
-
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+      const userId = localStorage.getItem("currentUserId");
+      setCurrentUserId(userId);
     }
   }, []);
 
@@ -37,6 +38,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    setCurrentUserId(null);
   };
 
   return (
@@ -55,7 +57,9 @@ function App() {
           />
           <Route
             path="/contacts"
-            element={isLoggedIn ? <ContactsPage /> : <Navigate to="/login" />}
+            element={
+              isLoggedIn ? <ContactsPage currentUserId={currentUserId} /> : <Navigate to="/login" />
+            }
           />
           <Route
             path="/analytics"
