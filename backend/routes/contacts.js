@@ -3,18 +3,6 @@ const router = express.Router();
 const pool = require("../db/connection");
 
 
-// Admin route: Get all contacts
-router.get("/", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM contacts");
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Error fetching contacts", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-
 // User route: Get contacts for a specific user
 router.get("/:userId", async (req, res) => {
   const userId = req.params.userId;
