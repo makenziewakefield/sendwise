@@ -3,12 +3,18 @@ import SpendingByCategoryChart from '../components/SpendingByCategoryChart';
 import SpendingLastMonthChart from '../components/SpendingLastMonthChart';
 import SpendingLastWeekChart from '../components/SpendingLastWeekChart';
 import BudgetTrackingChart from '../components/BudgetTrackingChart';
-import RecipientTransfersChart from '../components/RecipientTransfersChart'
+import RecipientTransfersChart from '../components/RecipientTransfersChart';
 import IncomingTransfersChart from '../components/IncomingTransfersChart'; 
+import { getUserIdFromToken } from "../utils/tokenUtils";
 import "../styles/Analytics.scss";
 
 const AnalyticsPage = () => {
-  const userId = 1; 
+
+  const token = localStorage.getItem("token");
+  const userId = getUserIdFromToken(token);
+  if (!userId) {
+    return <div>Please Log in!</div>; // Show a loading state or handle unauthenticated user
+  }
 
   return (
     <div className="analytics-page">

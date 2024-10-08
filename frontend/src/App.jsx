@@ -46,7 +46,9 @@ function App() {
       <div className="App">
         <NavBar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" 
+            element={isLoggedIn ? <HomePage /> : <Navigate to="/login" />} 
+          />
           <Route
             path="/send-money"
             element={isLoggedIn ? <SendMoney /> : <Navigate to="/login" />}

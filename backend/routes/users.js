@@ -88,14 +88,24 @@ router.put("/:userId", (req, res) => {
     });
 });
 
-// Get user balance
-router.get("/:userId/balance", async (req, res) => {
+router.get('/:userId/wallet-balance', async (req, res) => {
+  const { userId } = req.params;
+  console.log(`Fetching wallet balance for user ${userId}`); // Add a log
+
   try {
-    const balance = await getBalance(req.params.userId);
-    res.status(200).json({ balance });
-  } catch (error) {
-    console.error("Error fetching user balance:", error);
-    res.status(500).json({ error: "Internal server error" });
+    const result = await pool.query('SELECT wallet_balance FROM users WHERE user_id = $1', [userId]);
+    
+    if (result.rows.length === 0) {
+      console.log(`User ${userId} not found`);
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const balance = result.rows[0].wallet_balance;
+    console.log(`Wallet balance for user ${userId}: $${balance}`); // Add a log
+    res.json({ balance });
+  } catch (err) {
+    console.error('Error fetching wallet balance:', err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 

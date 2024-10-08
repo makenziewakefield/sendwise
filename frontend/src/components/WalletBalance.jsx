@@ -1,43 +1,32 @@
-import React, { useState, useEffect } from "react";
-import "../styles/Wallet.scss";
-import useCalculateBalance from "../hooks/useCalculateBalance";
-import { getUserIdFromToken } from "../utils/tokenUtils"; // Ensure token utility is imported
+import React, { useState, useEffect } from 'react';
+import '../styles/Wallet.scss';
 
-const WalletBalance = () => {
-  const [transactions, setTransactions] = useState([]);
+const WalletBalance = ({ userId }) => {
+  const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const token = localStorage.getItem("token"); // Fetch token from localStorage
-  const userId = getUserIdFromToken(token); // Extract userId from token
-
   useEffect(() => {
-    const fetchTransactions = async () => {
+    const fetchBalance = async () => {
       try {
-        const response = await fetch(`/api/v1/transactions/user/${userId}`);
-
+        const response = await fetch(`/api/v1/users/${userId}/wallet-balance`);
+        
         if (!response.ok) {
-          throw new Error(
-            `Error fetching wallet transactions: ${response.statusText}`
-          );
+          throw new Error(`Error fetching wallet balance: ${response.statusText}`);
         }
 
         const data = await response.json();
-        setTransactions(data);
-        setLoading(false);
+        setBalance(data.balance);
+        setLoading(false);  // Stop loading once the balance is fetched
       } catch (err) {
         console.error(err);
-        setError(err.message);
-        setLoading(false);
+        setError(err.message);  // Display the error in case of failure
+        setLoading(false);  // Stop loading in case of error
       }
     };
 
-    if (userId) {
-      fetchTransactions(); // Only fetch transactions if userId is available
-    }
+    fetchBalance();
   }, [userId]);
-
-  const balance = useCalculateBalance(transactions); // Calculate balance using the custom hook
 
   if (loading) return <div>Loading wallet balance...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -45,13 +34,7 @@ const WalletBalance = () => {
   return (
     <div>
       <h2>Your Wallet Balance</h2>
-      <p>
-        $
-        {balance.toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-      </p>
+      <p>${balance}</p>
     </div>
   );
 };

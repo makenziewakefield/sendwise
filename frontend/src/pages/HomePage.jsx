@@ -2,10 +2,15 @@ import React from 'react';
 import BudgetTrackingChart from '../components/BudgetTrackingChart';
 import WalletBalance from '../components/WalletBalance';
 import SpendingByCategoryChart from '../components/SpendingByCategoryChart';
+import { getUserIdFromToken } from "../utils/tokenUtils";
 import '../styles/Home.scss';
 
 const HomePage = () => {
-  const userId = 1; // This can be dynamic based on the logged-in user
+  const token = localStorage.getItem("token");
+  const userId = getUserIdFromToken(token);
+  if (!userId) {
+    return <div>Please Log in!</div>; 
+  }
 
   return (
     <div className="home-page">
