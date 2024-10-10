@@ -2,6 +2,8 @@ INSERT INTO contacts (user_id, contact_name, contact_email, contact_phone, conta
 VALUES
     (1, 'Bob', 'bob@example.com', '123-456-7890', 'Bobby'),    -- Alice's contact
     (1, 'Carol', 'carol@example.com', '234-567-8901', 'Caz'),  -- Alice's contact
+    (1, 'Dave', 'dave@example.com', '456-789-0123', 'Dav'),    -- Alice's contact
+    (1, 'Eve', 'eve@example.com', '567-890-1234', 'Evie'),     -- Alice's contact
     (2, 'Alice', 'alice@example.com', '345-678-9012', 'Al'),   -- Bob's contact
     (2, 'Dave', 'dave@example.com', '456-789-0123', 'Dav'),    -- Bob's contact
     (3, 'Eve', 'eve@example.com', '567-890-1234', 'Evie'),     -- Carol's contact
